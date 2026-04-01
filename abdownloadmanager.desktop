@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=AB Download Manager
+Comment=Fast and easy download manager
+Exec=/opt/ABDownloadManager/bin/ABDownloadManager
+Icon=/opt/ABDownloadManager/lib/ABDownloadManager.png
+Terminal=false
+Categories=Network;WebBrowser;Download;
+StartupNotify=true
