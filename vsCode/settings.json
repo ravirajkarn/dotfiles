@@ -1,0 +1,255 @@
+{
+  //VS_CODE EDITOR
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  "explorer.confirmDelete": false,
+  "files.autoSave": "afterDelay",
+  "editor.cursorStyle": "underline",
+  "editor.overtypeCursorStyle": "underline",
+  "editor.cursorBlinking": "solid",
+  "editor.colorDecorators": true,
+  "workbench.settings.applyToAllProfiles": ["C_Cpp.autocomplete"],
+  "workbench.editor.enablePreview": false,
+  "workbench.iconTheme": "vscode-icons",
+  "workbench.colorCustomizations": {
+    "[Vira*]": {
+      "statusBar.debuggingBackground": "#80CBC433",
+      "statusBar.debuggingForeground": "#80CBC4",
+      "toolbar.activeBackground": "#80CBC426",
+      "button.background": "#80CBC4",
+      "button.hoverBackground": "#80CBC4cc",
+      "extensionButton.separator": "#80CBC433",
+      "extensionButton.background": "#80CBC414",
+      "extensionButton.foreground": "#80CBC4",
+      "extensionButton.hoverBackground": "#80CBC433",
+      "extensionButton.prominentForeground": "#80CBC4",
+      "extensionButton.prominentBackground": "#80CBC414",
+      "extensionButton.prominentHoverBackground": "#80CBC433",
+      "activityBarBadge.background": "#80CBC4",
+      "activityBar.activeBorder": "#80CBC4",
+      "activityBarTop.activeBorder": "#80CBC4",
+      "list.inactiveSelectionIconForeground": "#80CBC4",
+      "list.activeSelectionForeground": "#80CBC4",
+      "list.inactiveSelectionForeground": "#80CBC4",
+      "list.highlightForeground": "#80CBC4",
+      "sash.hoverBorder": "#80CBC480",
+      "list.activeSelectionIconForeground": "#80CBC4",
+      "scrollbarSlider.activeBackground": "#80CBC480",
+      "editorSuggestWidget.highlightForeground": "#80CBC4",
+      "textLink.foreground": "#80CBC4",
+      "progressBar.background": "#80CBC4",
+      "pickerGroup.foreground": "#80CBC4",
+      "tab.activeBorder": "#80CBC4",
+      "tab.activeBorderTop": "#80CBC400",
+      "tab.unfocusedActiveBorder": "#80CBC4",
+      "tab.unfocusedActiveBorderTop": "#80CBC400",
+      "tab.activeModifiedBorder": "#80CBC400",
+      "notificationLink.foreground": "#80CBC4",
+      "editorWidget.resizeBorder": "#80CBC4",
+      "editorWidget.border": "#80CBC4",
+      "settings.modifiedItemIndicator": "#80CBC4",
+      "panelTitle.activeBorder": "#80CBC4",
+      "breadcrumb.activeSelectionForeground": "#80CBC4",
+      "menu.selectionForeground": "#80CBC4",
+      "menubar.selectionForeground": "#80CBC4",
+      "editor.findMatchBorder": "#80CBC4",
+      "selection.background": "#80CBC440",
+      "statusBarItem.remoteBackground": "#80CBC414",
+      "statusBarItem.remoteHoverBackground": "#80CBC4",
+      "statusBarItem.remoteForeground": "#80CBC4",
+      "notebook.inactiveFocusedCellBorder": "#80CBC480",
+      "commandCenter.activeBorder": "#80CBC480",
+      "chat.slashCommandForeground": "#80CBC4",
+      "chat.avatarForeground": "#80CBC4",
+      "activityBarBadge.foreground": "#000000",
+      "button.foreground": "#000000",
+      "statusBarItem.remoteHoverForeground": "#000000"
+    }
+  },
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  // TERMINAL SETTING
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  "terminal.integrated.cursorStyle": "underline",
+  "terminal.integrated.profiles.linux": {
+    "bash": {
+      "path": "bash",
+      "icon": "terminal-bash"
+    },
+    "zsh": {
+      "path": "zsh"
+    },
+    "fish": {
+      "path": "fish"
+    },
+    "tmux": {
+      "path": "zsh",
+      "args": [
+        "-i",
+        "-c",
+        "tmux a -t \"${workspaceFolderBasename}\" || tmux new -s \"${workspaceFolderBasename}\"; exec zsh"
+      ],
+      "icon": "terminal-tmux"
+    },
+    "pwsh": {
+      "path": "pwsh",
+      "icon": "terminal-powershell"
+    }
+  },
+  "terminal.integrated.defaultProfile.linux": "tmux",
+  "terminal.integrated.cursorStyleInactive": "underline",
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  //CPP CONFIG
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  "C_Cpp.default.compilerPath": "/usr/lib/llvm-19/bin/",
+  "C_Cpp.clang_format_fallbackStyle": "Google",
+  "C_Cpp.clang_format_style": "Google",
+  "C_Cpp.default.intelliSenseMode": "linux-clang-x64",
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MY GRAMMER
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  "cSpell.ignoreWords": ["zoro"],
+  "cSpell.userWords": [
+    "Makefiles",
+    "gtest",
+    "Karn",
+    "Ravi",
+    "Ravirajkarn",
+    "Sumit",
+    "Kumar"
+  ],
+  "cSpell.customDictionaries": {
+    "custom-dictionary-user": {
+      "name": "custom-dictionary-user",
+      "path": "~/.cspell/custom-dictionary-user.txt",
+      "addWords": true,
+      "scope": "user"
+    }
+  },
+  "cSpell.diagnosticLevel": "Hint",
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  // better-comments
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  "better-comments.tags": [
+    {
+      "tag": "!",
+      "color": "#FF2D00",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    },
+    {
+      "tag": "?",
+      "color": "#3498DB",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    },
+    {
+      "tag": "//",
+      "color": "#474747",
+      "strikethrough": true,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    },
+    {
+      "tag": "~",
+      "color": "#FF8C00",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    },
+    {
+      "tag": "*",
+      "color": "#98C379",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    }
+  ],
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  //Dart config
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.rulers": [80],
+    "editor.selectionHighlight": false,
+    "editor.tabCompletion": "onlySnippets",
+    "editor.wordBasedSuggestions": "off"
+  },
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  // CMAKE COFIG
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  "cmake.showConfigureWithDebuggerNotification": false,
+  "cmake.showOptionsMovedNotification": false,
+  "cmake.showNotAllDocumentsSavedQuestion": false,
+  "cmake.debugConfig": {
+    "externalConsole": true
+  },
+  // "cmake.buildBeforeRun": true,
+  "cmake.configureOnOpen": true,
+  "cmake.pinnedCommands": [
+    "workbench.action.tasks.configureTaskRunner",
+    "workbench.action.tasks.runTask"
+  ],
+  "cmake.options.advanced": {
+    "build": {
+      "statusBarVisibility": "inherit",
+      "inheritDefault": "visible"
+    },
+    "launch": {
+      "statusBarVisibility": "inherit",
+      "inheritDefault": "visible"
+    },
+    "debug": {
+      "statusBarVisibility": "inherit",
+      "inheritDefault": "visible"
+    }
+  },
+  "cmake.buildDirectory": "${workspaceFolder}/build/${buildType}",
+  "cmake.useCMakePresets": "always",
+  "cmake.allowCommentsInPresetsFile": true,
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  // TailwindCSS
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  // "[css]": {
+  //     "editor.suggest.insertMode": "replace",
+  //     "cSpell.fixSpellingWithRenameProvider": false,
+  //     "editor.quickSuggestions": {
+  //         "other": "on",
+  //         "comments": "off",
+  //         "strings": "on"
+  //     },
+  // },
+  // "files.associations": {
+  //     "*.css": "tailwindcss"
+  // },
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Miscellaneous
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  "explorer.confirmDragAndDrop": false,
+  "git.openRepositoryInParentFolders": "never",
+  "liveServer.settings.donotShowInfoMsg": true,
+  "markdown-preview-enhanced.previewTheme": "atom-dark.css",
+  "liveServer.settings.donotVerifyTags": true,
+  "viraTheme.accent": "Teal",
+  "vsicons.dontShowNewVersionMessage": true,
+  "vim.useSystemClipboard": true,
+  "editor.formatOnSave": true,
+  "C_Cpp.vcFormat.indent.accessSpecifiers": true,
+  "C_Cpp.vcFormat.indent.braces": true,
+  "C_Cpp.vcFormat.indent.caseContentsWhenBlock": true,
+  "C_Cpp.vcFormat.indent.caseLabels": true,
+  "C_Cpp.formatting": "clangFormat",
+  "workbench.colorTheme": "Ayu Mirage Bordered"
+}
