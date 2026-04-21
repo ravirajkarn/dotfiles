@@ -1,0 +1,231 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<channel name="xfce4-panel" version="1.0">
+  <property name="configver" type="int" value="2"/>
+  <property name="panels" type="array">
+    <value type="int" value="1"/>
+    <property name="dark-mode" type="bool" value="true"/>
+    <property name="panel-1" type="empty">
+      <property name="background-style" type="uint" value="0"/>
+      <property name="icon-size" type="uint" value="0"/>
+      <property name="length" type="uint" value="100"/>
+      <property name="length-adjust" type="bool" value="true"/>
+      <property name="plugin-ids" type="array">
+        <value type="int" value="1"/>
+        <value type="int" value="2"/>
+        <value type="int" value="3"/>
+        <value type="int" value="4"/>
+        <value type="int" value="6"/>
+        <value type="int" value="23"/>
+        <value type="int" value="7"/>
+        <value type="int" value="8"/>
+        <value type="int" value="11"/>
+        <value type="int" value="10"/>
+        <value type="int" value="9"/>
+        <value type="int" value="12"/>
+        <value type="int" value="14"/>
+        <value type="int" value="15"/>
+        <value type="int" value="16"/>
+        <value type="int" value="17"/>
+        <value type="int" value="18"/>
+        <value type="int" value="19"/>
+        <value type="int" value="21"/>
+        <value type="int" value="22"/>
+      </property>
+      <property name="position" type="string" value="p=6;x=960;y=18"/>
+      <property name="position-locked" type="bool" value="true"/>
+      <property name="size" type="uint" value="34"/>
+    </property>
+  </property>
+  <property name="plugins" type="empty">
+    <property name="clipman" type="empty">
+      <property name="settings" type="empty">
+        <property name="enable-actions" type="bool" value="true"/>
+        <property name="save-on-quit" type="bool" value="true"/>
+      </property>
+      <property name="tweaks" type="empty">
+        <property name="never-confirm-history-clear" type="bool" value="true"/>
+        <property name="paste-on-activate" type="uint" value="1"/>
+        <property name="popup-at-pointer" type="bool" value="true"/>
+      </property>
+    </property>
+    <property name="plugin-1" type="string" value="whiskermenu">
+      <property name="button-icon" type="string" value="kali-panel-menu"/>
+      <property name="favorites" type="array">
+        <value type="string" value="xfce4-terminal-emulator.desktop"/>
+        <value type="string" value="root-terminal.desktop"/>
+        <value type="string" value="xfce4-file-manager.desktop"/>
+        <value type="string" value="xfce-text-editor.desktop"/>
+        <value type="string" value="xfce4-web-browser.desktop"/>
+        <value type="string" value="kali-www.desktop"/>
+        <value type="string" value="kali-tools.desktop"/>
+        <value type="string" value="kali-docs.desktop"/>
+        <value type="string" value="kali-bugs.desktop"/>
+        <value type="string" value="offsec-training.desktop"/>
+        <value type="string" value="exploit-database.desktop"/>
+        <value type="string" value="vulnhub.desktop"/>
+      </property>
+      <property name="recent" type="array">
+        <value type="string" value="obsidian.desktop"/>
+        <value type="string" value="org.telegram.desktop.desktop"/>
+        <value type="string" value="abdownloadmanager.desktop"/>
+        <value type="string" value="org.kde.kdeconnect.app.desktop"/>
+        <value type="string" value="chrome-hnpfjngllnobngcgfapefoaidbinmjnm-Default.desktop"/>
+        <value type="string" value="chrome-mjoklplbddabcmpepnokjaffbmgbkkgg-Default.desktop"/>
+        <value type="string" value="xfce4-terminal-emulator.desktop"/>
+        <value type="string" value="code.desktop"/>
+        <value type="string" value="xfce4-mime-settings.desktop"/>
+      </property>
+      <property name="show-button-icon" type="bool" value="true"/>
+      <property name="show-button-title" type="bool" value="false"/>
+    </property>
+    <property name="plugin-10" type="string" value="separator">
+      <property name="expand" type="bool" value="true"/>
+      <property name="style" type="uint" value="0"/>
+    </property>
+    <property name="plugin-11" type="string" value="tasklist">
+      <property name="flat-buttons" type="bool" value="true"/>
+      <property name="grouping" type="bool" value="false"/>
+      <property name="include-all-monitors" type="bool" value="false"/>
+      <property name="include-all-workspaces" type="bool" value="false"/>
+      <property name="middle-click" type="uint" value="1"/>
+      <property name="show-handle" type="bool" value="false"/>
+      <property name="show-labels" type="bool" value="false"/>
+      <property name="show-tooltips" type="bool" value="true"/>
+      <property name="show-wireframes" type="bool" value="false"/>
+      <property name="sort-order" type="uint" value="0"/>
+      <property name="switch-workspace-on-unminimize" type="bool" value="true"/>
+    </property>
+    <property name="plugin-12" type="string" value="separator">
+      <property name="expand" type="bool" value="false"/>
+      <property name="style" type="uint" value="0"/>
+    </property>
+    <property name="plugin-14" type="string" value="systray">
+      <property name="icon-size" type="int" value="0"/>
+      <property name="known-items" type="array">
+        <value type="string" value="DBST17220161750"/>
+        <value type="string" value="DBST3816870426545"/>
+        <value type="string" value="DBST18280533286"/>
+        <value type="string" value="DBST8838433011886"/>
+        <value type="string" value="DBST250645887304408"/>
+        <value type="string" value="DBST44166792369097"/>
+        <value type="string" value="TelegramDesktop"/>
+        <value type="string" value="DBST3578520884052"/>
+        <value type="string" value="proton.vpn.app.gtk"/>
+        <value type="string" value="DBST77514907440419"/>
+        <value type="string" value="DBST72325342345104"/>
+        <value type="string" value="chrome_status_icon_1"/>
+        <value type="string" value="xpad"/>
+        <value type="string" value="DBST141661443902"/>
+        <value type="string" value="DBST152691546113"/>
+        <value type="string" value="DBST10331805015871"/>
+        <value type="string" value="DBST10080986346866"/>
+        <value type="string" value="DBST8709789826314"/>
+        <value type="string" value="DBST8664389761027"/>
+        <value type="string" value="DBST8562325255761"/>
+        <value type="string" value="DBST8551048387751"/>
+        <value type="string" value="DBST8445499679999"/>
+        <value type="string" value="DBST20056465758"/>
+        <value type="string" value="DBST16288575566"/>
+        <value type="string" value="DBST23560757625"/>
+        <value type="string" value="DBST75743624056614"/>
+        <value type="string" value="DBST75062838509453"/>
+        <value type="string" value="blueman"/>
+      </property>
+      <property name="known-legacy-items" type="array">
+        <value type="string" value="wi-fi network connection “sumit” active: sumit (78%)"/>
+        <value type="string" value="wi-fi network connection “sumit” active: sumit (69%)"/>
+        <value type="string" value="wi-fi network connection “sumit” active: sumit (66%)"/>
+        <value type="string" value="wi-fi network connection “sumit” active: sumit (63%)"/>
+        <value type="string" value="wi-fi network connection “sumit” active: sumit (52%)"/>
+        <value type="string" value="wi-fi network connection “sumit” active: sumit (56%)"/>
+        <value type="string" value="wi-fi network connection “sumit” active: sumit (61%)"/>
+        <value type="string" value="xfce4-power-manager"/>
+        <value type="string" value="no network connection"/>
+        <value type="string" value="wi-fi network connection “sumit” active: sumit (70%)"/>
+        <value type="string" value="wi-fi network connection “sumit” active: sumit (75%)"/>
+        <value type="string" value="wi-fi network connection “sumit” active: sumit (62%)"/>
+        <value type="string" value="wi-fi network connection “sumit” active: sumit (87%)"/>
+        <value type="string" value="wi-fi network connection “sumit” active: sumit (91%)"/>
+        <value type="string" value="networkmanager applet"/>
+        <value type="string" value="clipman"/>
+        <value type="string" value="onboard"/>
+        <value type="string" value="wi-fi network connection “sumit” active: sumit (76%)"/>
+      </property>
+      <property name="size-max" type="uint" value="22"/>
+      <property name="square-icons" type="bool" value="true"/>
+      <property name="symbolic-icons" type="bool" value="false"/>
+    </property>
+    <property name="plugin-15" type="string" value="genmon">
+      <property name="command" type="string" value="/usr/share/kali-themes/xfce4-panel-genmon-vpnip.sh"/>
+      <property name="enable-single-row" type="bool" value="true"/>
+      <property name="font" type="string" value="Fira Code Medium 8"/>
+      <property name="text" type="string" value="(genmon)"/>
+      <property name="update-period" type="int" value="1000"/>
+      <property name="use-label" type="bool" value="false"/>
+    </property>
+    <property name="plugin-16" type="string" value="pulseaudio">
+      <property name="enable-keyboard-shortcuts" type="bool" value="true"/>
+      <property name="known-players" type="string" value="Chrome;moto g45 5G"/>
+    </property>
+    <property name="plugin-17" type="string" value="notification-plugin"/>
+    <property name="plugin-18" type="string" value="power-manager-plugin"/>
+    <property name="plugin-19" type="string" value="clock">
+      <property name="digital-date-format" type="string" value="%d %B %Y"/>
+      <property name="digital-layout" type="uint" value="0"/>
+      <property name="digital-time-font" type="string" value="Cantarell 11"/>
+      <property name="digital-time-format" type="string" value="%I:%M %p"/>
+      <property name="mode" type="uint" value="2"/>
+      <property name="show-week-numbers" type="bool" value="false"/>
+    </property>
+    <property name="plugin-2" type="string" value="separator"/>
+    <property name="plugin-21" type="string" value="separator">
+      <property name="expand" type="bool" value="false"/>
+      <property name="style" type="uint" value="1"/>
+    </property>
+    <property name="plugin-22" type="string" value="actions">
+      <property name="appearance" type="uint" value="0"/>
+      <property name="items" type="array">
+        <value type="string" value="+lock-screen"/>
+        <value type="string" value="-switch-user"/>
+        <value type="string" value="-separator"/>
+        <value type="string" value="-suspend"/>
+        <value type="string" value="-hibernate"/>
+        <value type="string" value="-hybrid-sleep"/>
+        <value type="string" value="-separator"/>
+        <value type="string" value="-shutdown"/>
+        <value type="string" value="-restart"/>
+        <value type="string" value="-separator"/>
+        <value type="string" value="+logout"/>
+        <value type="string" value="-logout-dialog"/>
+      </property>
+    </property>
+    <property name="plugin-23" type="string" value="launcher">
+      <property name="items" type="array">
+        <value type="string" value="17766848022.desktop"/>
+      </property>
+    </property>
+    <property name="plugin-3" type="string" value="showdesktop"/>
+    <property name="plugin-4" type="string" value="directorymenu">
+      <property name="base-directory" type="string" value="/home/ravirajkarn"/>
+      <property name="icon-name" type="string" value="system-file-manager"/>
+      <property name="new-document" type="bool" value="false"/>
+      <property name="new-folder" type="bool" value="false"/>
+    </property>
+    <property name="plugin-6" type="string" value="launcher">
+      <property name="items" type="array">
+        <value type="string" value="17766847861.desktop"/>
+      </property>
+    </property>
+    <property name="plugin-7" type="string" value="launcher">
+      <property name="items" type="array">
+        <value type="string" value="17766848323.desktop"/>
+      </property>
+      <property name="move-first" type="bool" value="true"/>
+    </property>
+    <property name="plugin-8" type="string" value="separator">
+      <property name="expand" type="bool" value="false"/>
+    </property>
+    <property name="plugin-9" type="string" value="netload"/>
+  </property>
+</channel>
