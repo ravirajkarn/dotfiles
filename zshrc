@@ -257,6 +257,15 @@ if [ -f /etc/zsh_command_not_found ]; then
     . /etc/zsh_command_not_found
 fi
 
+# To run tmux automatically on the start.
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
   tmux attach -t default || tmux new -s default
 fi
+
+# To run auto completion with TAB key which are installed with pipx
+#
+# Enable Bash-style completion compatibility for zsh
+# autoload -Uz bashcompinit && bashcompinit
+#
+# Source the global python-argcomplete script
+# [[ -f ~/.bash_competion]]

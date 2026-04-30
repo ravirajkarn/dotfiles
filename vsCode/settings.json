@@ -62,8 +62,8 @@
       "chat.avatarForeground": "#80CBC4",
       "activityBarBadge.foreground": "#000000",
       "button.foreground": "#000000",
-      "statusBarItem.remoteHoverForeground": "#000000"
-    }
+      "statusBarItem.remoteHoverForeground": "#000000",
+    },
   },
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
   // TERMINAL SETTING
@@ -72,27 +72,27 @@
   "terminal.integrated.profiles.linux": {
     "bash": {
       "path": "bash",
-      "icon": "terminal-bash"
+      "icon": "terminal-bash",
     },
     "zsh": {
-      "path": "zsh"
+      "path": "zsh",
     },
     "fish": {
-      "path": "fish"
+      "path": "fish",
     },
     "tmux": {
       "path": "zsh",
       "args": [
         "-i",
         "-c",
-        "tmux a -t \"${workspaceFolderBasename}\" || tmux new -s \"${workspaceFolderBasename}\"; exec zsh"
+        "tmux a -t \"${workspaceFolderBasename}\" || tmux new -s \"${workspaceFolderBasename}\"; exec zsh",
       ],
-      "icon": "terminal-tmux"
+      "icon": "terminal-tmux",
     },
     "pwsh": {
       "path": "pwsh",
-      "icon": "terminal-powershell"
-    }
+      "icon": "terminal-powershell",
+    },
   },
   "terminal.integrated.defaultProfile.linux": "tmux",
   "terminal.integrated.cursorStyleInactive": "underline",
@@ -115,15 +115,15 @@
     "Ravi",
     "Ravirajkarn",
     "Sumit",
-    "Kumar"
+    "Kumar",
   ],
   "cSpell.customDictionaries": {
     "custom-dictionary-user": {
       "name": "custom-dictionary-user",
       "path": "~/.cspell/custom-dictionary-user.txt",
       "addWords": true,
-      "scope": "user"
-    }
+      "scope": "user",
+    },
   },
   "cSpell.diagnosticLevel": "Hint",
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,7 +137,7 @@
       "underline": false,
       "backgroundColor": "transparent",
       "bold": false,
-      "italic": false
+      "italic": false,
     },
     {
       "tag": "?",
@@ -146,7 +146,7 @@
       "underline": false,
       "backgroundColor": "transparent",
       "bold": false,
-      "italic": false
+      "italic": false,
     },
     {
       "tag": "//",
@@ -155,7 +155,7 @@
       "underline": false,
       "backgroundColor": "transparent",
       "bold": false,
-      "italic": false
+      "italic": false,
     },
     {
       "tag": "~",
@@ -164,7 +164,7 @@
       "underline": false,
       "backgroundColor": "transparent",
       "bold": false,
-      "italic": false
+      "italic": false,
     },
     {
       "tag": "*",
@@ -173,8 +173,8 @@
       "underline": false,
       "backgroundColor": "transparent",
       "bold": false,
-      "italic": false
-    }
+      "italic": false,
+    },
   ],
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
   //Dart config
@@ -185,7 +185,7 @@
     "editor.rulers": [80],
     "editor.selectionHighlight": false,
     "editor.tabCompletion": "onlySnippets",
-    "editor.wordBasedSuggestions": "off"
+    "editor.wordBasedSuggestions": "off",
   },
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
   // CMAKE COFIG
@@ -194,27 +194,27 @@
   "cmake.showOptionsMovedNotification": false,
   "cmake.showNotAllDocumentsSavedQuestion": false,
   "cmake.debugConfig": {
-    "externalConsole": true
+    "externalConsole": true,
   },
   // "cmake.buildBeforeRun": true,
   "cmake.configureOnOpen": true,
   "cmake.pinnedCommands": [
     "workbench.action.tasks.configureTaskRunner",
-    "workbench.action.tasks.runTask"
+    "workbench.action.tasks.runTask",
   ],
   "cmake.options.advanced": {
     "build": {
       "statusBarVisibility": "inherit",
-      "inheritDefault": "visible"
+      "inheritDefault": "visible",
     },
     "launch": {
       "statusBarVisibility": "inherit",
-      "inheritDefault": "visible"
+      "inheritDefault": "visible",
     },
     "debug": {
       "statusBarVisibility": "inherit",
-      "inheritDefault": "visible"
-    }
+      "inheritDefault": "visible",
+    },
   },
   "cmake.buildDirectory": "${workspaceFolder}/build/${buildType}",
   "cmake.useCMakePresets": "always",
@@ -251,5 +251,7 @@
   "C_Cpp.vcFormat.indent.caseContentsWhenBlock": true,
   "C_Cpp.vcFormat.indent.caseLabels": true,
   "C_Cpp.formatting": "clangFormat",
-  "workbench.colorTheme": "Ayu Mirage Bordered"
+  "workbench.colorTheme": "Adapted-Dark-VSCode-Plus",
+  "gitlens.graph.minimap.enabled": false,
+  "workbench.secondarySideBar.defaultVisibility": "hidden",
 }

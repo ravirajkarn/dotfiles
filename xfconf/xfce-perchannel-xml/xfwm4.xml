@@ -6,14 +6,25 @@
     <property name="theme" type="empty"/>
     <property name="title_font" type="empty"/>
     <property name="easy_click" type="empty"/>
-    <property name="workspace_count" type="int" value="3"/>
+    <property name="workspace_count" type="int" value="4"/>
     <property name="cycle_workspaces" type="empty"/>
     <property name="scroll_workspaces" type="empty"/>
     <property name="wrap_windows" type="empty"/>
     <property name="box_resize" type="empty"/>
-    <property name="cycle_raise" type="empty"/>
+    <property name="cycle_raise" type="bool" value="true"/>
     <property name="borderless_maximize" type="empty"/>
-    <property name="workspace_names" type="empty"/>
+    <property name="workspace_names" type="array">
+      <value type="string" value="1"/>
+      <value type="string" value="2"/>
+      <value type="string" value="3"/>
+      <value type="string" value="DSA"/>
+      <value type="string" value="5"/>
+      <value type="string" value="6"/>
+      <value type="string" value="7"/>
+      <value type="string" value="8"/>
+      <value type="string" value="9"/>
+      <value type="string" value="0"/>
+    </property>
     <property name="activate_action" type="string" value="bring"/>
     <property name="box_move" type="bool" value="false"/>
     <property name="button_offset" type="int" value="0"/>

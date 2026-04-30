@@ -50,7 +50,7 @@
       </property>
     </property>
     <property name="plugin-1" type="string" value="whiskermenu">
-      <property name="button-icon" type="string" value="kali-panel-menu"/>
+      <property name="button-icon" type="string" value="chrome-app-list"/>
       <property name="favorites" type="array">
         <value type="string" value="xfce4-terminal-emulator.desktop"/>
         <value type="string" value="root-terminal.desktop"/>
@@ -66,15 +66,16 @@
         <value type="string" value="vulnhub.desktop"/>
       </property>
       <property name="recent" type="array">
-        <value type="string" value="obsidian.desktop"/>
-        <value type="string" value="org.telegram.desktop.desktop"/>
-        <value type="string" value="abdownloadmanager.desktop"/>
+        <value type="string" value="qterminal.desktop"/>
         <value type="string" value="org.kde.kdeconnect.app.desktop"/>
-        <value type="string" value="chrome-hnpfjngllnobngcgfapefoaidbinmjnm-Default.desktop"/>
-        <value type="string" value="chrome-mjoklplbddabcmpepnokjaffbmgbkkgg-Default.desktop"/>
-        <value type="string" value="xfce4-terminal-emulator.desktop"/>
-        <value type="string" value="code.desktop"/>
+        <value type="string" value="firefox-esr.desktop"/>
         <value type="string" value="xfce4-mime-settings.desktop"/>
+        <value type="string" value="chrome-hnpfjngllnobngcgfapefoaidbinmjnm-Default.desktop"/>
+        <value type="string" value="chrome-kjcjfjccmpngedeildfijeanhihmolck-Default.desktop"/>
+        <value type="string" value="abdownloadmanager.desktop"/>
+        <value type="string" value="proton.vpn.app.gtk.desktop"/>
+        <value type="string" value="org.telegram.desktop.desktop"/>
+        <value type="string" value="start-tor-browser.desktop"/>
       </property>
       <property name="show-button-icon" type="bool" value="true"/>
       <property name="show-button-title" type="bool" value="false"/>
@@ -103,6 +104,9 @@
     <property name="plugin-14" type="string" value="systray">
       <property name="icon-size" type="int" value="0"/>
       <property name="known-items" type="array">
+        <value type="string" value="DBST19351599446"/>
+        <value type="string" value="DBST107393208666586"/>
+        <value type="string" value="DBST23166844125"/>
         <value type="string" value="DBST17220161750"/>
         <value type="string" value="DBST3816870426545"/>
         <value type="string" value="DBST18280533286"/>
@@ -133,6 +137,7 @@
         <value type="string" value="blueman"/>
       </property>
       <property name="known-legacy-items" type="array">
+        <value type="string" value="wi-fi network connection “sumit” active: sumit (99%)"/>
         <value type="string" value="wi-fi network connection “sumit” active: sumit (78%)"/>
         <value type="string" value="wi-fi network connection “sumit” active: sumit (69%)"/>
         <value type="string" value="wi-fi network connection “sumit” active: sumit (66%)"/>
@@ -166,7 +171,7 @@
     </property>
     <property name="plugin-16" type="string" value="pulseaudio">
       <property name="enable-keyboard-shortcuts" type="bool" value="true"/>
-      <property name="known-players" type="string" value="Chrome;moto g45 5G"/>
+      <property name="known-players" type="string" value="Chrome;moto g45 5G;moto g45 5G Bluetooth Player;org.kde.kdeconnect.app"/>
     </property>
     <property name="plugin-17" type="string" value="notification-plugin"/>
     <property name="plugin-18" type="string" value="power-manager-plugin"/>
