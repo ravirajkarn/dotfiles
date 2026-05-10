@@ -254,4 +254,11 @@
   "workbench.colorTheme": "Adapted-Dark-VSCode-Plus",
   "gitlens.graph.minimap.enabled": false,
   "workbench.secondarySideBar.defaultVisibility": "hidden",
+  "github.copilot.nextEditSuggestions.enabled": false,
+  "github.copilot.enable": {
+    "*": false,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false
+  },
 }

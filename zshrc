@@ -257,9 +257,12 @@ if [ -f /etc/zsh_command_not_found ]; then
     . /etc/zsh_command_not_found
 fi
 
-# To run tmux automatically on the start.
-if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-  tmux attach -t default || tmux new -s default
+# Only run if NOT in VS Code and in an interactive shell
+if [ "$TERM_PROGRAM" != "vscode" ] && [[ $- == *i* ]]; then
+  # Only run if tmux is installed and we aren't already inside a tmux session
+  if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
+    tmux attach -t default || tmux new -s default
+  fi
 fi
 
 # To run auto completion with TAB key which are installed with pipx

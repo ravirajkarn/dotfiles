@@ -23,6 +23,6 @@
   <property name="do-slideout" type="bool" value="true"/>
   <property name="do-fadeout" type="bool" value="false"/>
   <property name="notification-log" type="bool" value="true"/>
-  <property name="do-not-disturb" type="bool" value="true"/>
+  <property name="do-not-disturb" type="bool" value="false"/>
   <property name="log-level" type="string" value="always"/>
 </channel>
