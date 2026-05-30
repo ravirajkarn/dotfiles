@@ -39,7 +39,6 @@
     <property name="custom" type="empty">
       <property name="&lt;Primary&gt;&lt;Alt&gt;Delete" type="string" value="xfce4-session-logout"/>
       <property name="&lt;Primary&gt;&lt;Shift&gt;Print" type="string" value="/usr/share/kali-themes/xfce4-screenshooter --region --clipboard"/>
-      <property name="&lt;Super&gt;f" type="string" value="exo-open --launch FileManager"/>
       <property name="&lt;Alt&gt;F1" type="string" value="xfce4-popup-whiskermenu --pointer"/>
       <property name="&lt;Super&gt;w" type="string" value="exo-open --launch WebBrowser"/>
       <property name="&lt;Super&gt;l" type="string" value="xflock4"/>
@@ -57,7 +56,6 @@
       <property name="XF86Calculator" type="string" value="mate-calc"/>
       <property name="&lt;Super&gt;t" type="string" value="exo-open --launch TerminalEmulator"/>
       <property name="XF86HomePage" type="string" value="exo-open --launch WebBrowser"/>
-      <property name="&lt;Primary&gt;&lt;Alt&gt;f" type="string" value="exo-open --launch FileManager"/>
       <property name="&lt;Alt&gt;Print" type="string" value="/usr/share/kali-themes/xfce4-screenshooter --window"/>
       <property name="&lt;Super&gt;F1" type="string" value="xfce4-find-cursor"/>
       <property name="&lt;Primary&gt;&lt;Alt&gt;l" type="string" value="xflock4"/>
@@ -152,7 +150,6 @@
       <property name="&lt;Alt&gt;F8" type="string" value="resize_window_key"/>
       <property name="&lt;Primary&gt;&lt;Alt&gt;5" type="string" value="workspace_5_key"/>
       <property name="&lt;Primary&gt;&lt;Alt&gt;&lt;Shift&gt;Right" type="string" value="move_window_right_workspace_key"/>
-      <property name="&lt;Super&gt;Tab" type="string" value="switch_window_key"/>
       <property name="Right" type="string" value="right_key"/>
       <property name="Left" type="string" value="left_key"/>
       <property name="&lt;Super&gt;KP_9" type="string" value="tile_up_right_key"/>
@@ -208,6 +205,7 @@
       <property name="&lt;Alt&gt;F11" type="string" value="fullscreen_key"/>
       <property name="&lt;Primary&gt;&lt;Alt&gt;3" type="string" value="workspace_3_key"/>
       <property name="override" type="bool" value="true"/>
+      <property name="&lt;Super&gt;Tab" type="string" value="switch_application_key"/>
     </property>
   </property>
   <property name="providers" type="array">

@@ -250,15 +250,26 @@
   "C_Cpp.vcFormat.indent.braces": true,
   "C_Cpp.vcFormat.indent.caseContentsWhenBlock": true,
   "C_Cpp.vcFormat.indent.caseLabels": true,
-  "C_Cpp.formatting": "clangFormat",
-  "workbench.colorTheme": "Adapted-Dark-VSCode-Plus",
+  "workbench.colorTheme": "One Dark Pro Darker",
   "gitlens.graph.minimap.enabled": false,
   "workbench.secondarySideBar.defaultVisibility": "hidden",
   "github.copilot.nextEditSuggestions.enabled": false,
+  "update.mode": "manual",
+  "geminicodeassist.project": "galvanized-backbone-vzftk",
+  "geminicodeassist.inlineSuggestions.enableAuto": true,
+  "diffEditor.codeLens": true,
   "github.copilot.enable": {
     "*": false,
     "plaintext": false,
     "markdown": false,
-    "scminput": false
+    "scminput": false,
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  },
+  "gitlens.ai.model": "vscode",
+  "gitlens.ai.vscode.model": "copilot:gpt-4.1",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
 }

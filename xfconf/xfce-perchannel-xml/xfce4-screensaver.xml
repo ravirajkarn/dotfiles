@@ -1,0 +1,26 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<channel name="xfce4-screensaver" version="1.0">
+  <property name="lock" type="empty">
+    <property name="embedded-keyboard" type="empty">
+      <property name="enabled" type="empty"/>
+      <property name="command" type="empty"/>
+    </property>
+  </property>
+  <property name="saver" type="empty">
+    <property name="mode" type="int" value="2"/>
+    <property name="themes" type="empty">
+      <property name="list" type="array">
+        <value type="string" value="screensavers-xfce-personal-slideshow"/>
+      </property>
+    </property>
+  </property>
+  <property name="screensavers" type="empty">
+    <property name="xfce-personal-slideshow" type="empty">
+      <property name="no-crop" type="bool" value="true"/>
+      <property name="arguments" type="string" value="--location=&apos;/home/ravirajkarn/Public/BingWallpapers&apos; --background-color=&apos;#000000&apos; --no-crop"/>
+      <property name="location" type="string" value="/home/ravirajkarn/Public/BingWallpapers"/>
+      <property name="no-stretch" type="bool" value="false"/>
+    </property>
+  </property>
+</channel>
