@@ -1,3 +1,30 @@
 [submodule "silent"]
-	path = silent
-	url = https://github.com/uiriansan/SilentSDDM.git
+path = silent
+url = https://github.com/uiriansan/SilentSDDM.git
+[submodule "tmux/plugins/tpm"]
+path = tmux/plugins/tpm
+url = https://github.com/tmux-plugins/tpm.git
+[submodule "tmux/plugins/tmux-yank"]
+path = tmux/plugins/tmux-yank
+url = https://github.com/tmux-plugins/tmux-yank.git
+[submodule "tmux/plugins/catppuccin/tmux"]
+path = tmux/plugins/catppuccin/tmux
+url = https://github.com/catppuccin/tmux.git
+[submodule "tmux/plugins/tmux-which-key"]
+path = tmux/plugins/tmux-which-key
+url = https://github.com/alexwforsythe/tmux-which-key.git
+[submodule "tmux/plugins/tmux-battery"]
+path = tmux/plugins/tmux-battery
+url = https://github.com/tmux-plugins/tmux-battery.git
+[submodule "tmux/plugins/vim-tmux-navigator"]
+path = tmux/plugins/vim-tmux-navigator
+url = https://github.com/christoomey/vim-tmux-navigator.git
+[submodule "tmux/plugins/tmux-sessionx"]
+path = tmux/plugins/tmux-sessionx
+url = https://github.com/omerxx/tmux-sessionx.git
+[submodule "tmux/plugins/tmux-sensible"]
+path = tmux/plugins/tmux-sensible
+url = https://github.com/tmux-plugins/tmux-sensible.git
+[submodule "Nordic"]
+	path = Nordic
+	url = https://github.com/EliverLara/Nordic.git

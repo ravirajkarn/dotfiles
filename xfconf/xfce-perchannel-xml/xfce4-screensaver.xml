@@ -18,8 +18,8 @@
   <property name="screensavers" type="empty">
     <property name="xfce-personal-slideshow" type="empty">
       <property name="no-crop" type="bool" value="true"/>
-      <property name="arguments" type="string" value="--location=&apos;/home/ravirajkarn/Public/BingWallpapers&apos; --background-color=&apos;#000000&apos; --no-crop"/>
-      <property name="location" type="string" value="/home/ravirajkarn/Public/BingWallpapers"/>
+      <property name="arguments" type="string" value="--location=&apos;/home/sumit/Public/BingWallpapers&apos; --background-color=&apos;#000000&apos; --no-crop"/>
+      <property name="location" type="string" value="/home/sumit/Public/BingWallpapers"/>
       <property name="no-stretch" type="bool" value="false"/>
     </property>
   </property>

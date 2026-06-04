@@ -272,3 +272,4 @@ fi
 #
 # Source the global python-argcomplete script
 # [[ -f ~/.bash_competion]]
+: undercover && source ~/.config/zshrc-undercover
