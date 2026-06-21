@@ -5,8 +5,8 @@
     <property name="navigationbar" type="empty">
       <property name="position" type="string" value="left"/>
     </property>
-    <property name="height" type="uint" value="1009"/>
-    <property name="width" type="uint" value="950"/>
+    <property name="height" type="uint" value="1011"/>
+    <property name="width" type="uint" value="469"/>
     <property name="thumbnails" type="empty">
       <property name="show" type="bool" value="false"/>
     </property>

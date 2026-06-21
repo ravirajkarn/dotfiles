@@ -9,7 +9,9 @@
   "editor.colorDecorators": true,
   "workbench.settings.applyToAllProfiles": ["C_Cpp.autocomplete"],
   "workbench.editor.enablePreview": false,
-  "workbench.iconTheme": "vscode-icons",
+  "workbench.colorTheme": "Tokyo Night",
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.secondarySideBar.defaultVisibility": "hidden",
   "workbench.colorCustomizations": {
     "[Vira*]": {
       "statusBar.debuggingBackground": "#80CBC433",
@@ -104,6 +106,10 @@
   "C_Cpp.clang_format_style": "Google",
   "C_Cpp.default.intelliSenseMode": "linux-clang-x64",
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  "C_Cpp.vcFormat.indent.accessSpecifiers": true,
+  "C_Cpp.vcFormat.indent.braces": true,
+  "C_Cpp.vcFormat.indent.caseContentsWhenBlock": true,
+  "C_Cpp.vcFormat.indent.caseLabels": true,
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
   // MY GRAMMER
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -222,18 +228,18 @@
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
   // TailwindCSS
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
-  // "[css]": {
-  //     "editor.suggest.insertMode": "replace",
-  //     "cSpell.fixSpellingWithRenameProvider": false,
-  //     "editor.quickSuggestions": {
-  //         "other": "on",
-  //         "comments": "off",
-  //         "strings": "on"
-  //     },
-  // },
-  // "files.associations": {
-  //     "*.css": "tailwindcss"
-  // },
+  "[css]": {
+      "editor.suggest.insertMode": "replace",
+      "cSpell.fixSpellingWithRenameProvider": false,
+      "editor.quickSuggestions": {
+          "other": "on",
+          "comments": "off",
+          "strings": "on"
+      },
+  },
+  "files.associations": {
+      "*.css": "tailwindcss"
+  },
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
   // Miscellaneous
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -246,13 +252,7 @@
   "vsicons.dontShowNewVersionMessage": true,
   "vim.useSystemClipboard": true,
   "editor.formatOnSave": true,
-  "C_Cpp.vcFormat.indent.accessSpecifiers": true,
-  "C_Cpp.vcFormat.indent.braces": true,
-  "C_Cpp.vcFormat.indent.caseContentsWhenBlock": true,
-  "C_Cpp.vcFormat.indent.caseLabels": true,
-  "workbench.colorTheme": "One Dark Pro Darker",
   "gitlens.graph.minimap.enabled": false,
-  "workbench.secondarySideBar.defaultVisibility": "hidden",
   "github.copilot.nextEditSuggestions.enabled": false,
   "update.mode": "manual",
   "geminicodeassist.project": "galvanized-backbone-vzftk",
@@ -272,4 +272,13 @@
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "explorer.confirmPasteNative": false,
+  "debug.onTaskErrors": "abort",
+
 }

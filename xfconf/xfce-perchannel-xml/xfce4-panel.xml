@@ -34,11 +34,41 @@
     </property>
   </property>
   <property name="plugins" type="empty">
+    <property name="clipman" type="empty">
+      <property name="settings" type="empty">
+        <property name="enable-actions" type="bool" value="true"/>
+        <property name="max-images-in-history" type="uint" value="1"/>
+      </property>
+      <property name="tweaks" type="empty">
+        <property name="popup-at-pointer" type="bool" value="true"/>
+      </property>
+    </property>
     <property name="plugin-1" type="string" value="whiskermenu">
       <property name="button-icon" type="string" value="/home/sumit/Documents/dotfiles/shapes.png"/>
+      <property name="favorites" type="array">
+        <value type="string" value="xfce4-file-manager.desktop"/>
+        <value type="string" value="xfce-text-editor.desktop"/>
+        <value type="string" value="code.desktop"/>
+        <value type="string" value="chrome-abnfpfhjmipcnaibcolbacfhgfcmjjbn-Default.desktop"/>
+        <value type="string" value="kitty.desktop"/>
+        <value type="string" value="org.kde.okular.desktop"/>
+        <value type="string" value="chrome-nhpkhfhppiampjblenncchhnipmeafgd-Default.desktop"/>
+        <value type="string" value="onlyoffice-desktopeditors.desktop"/>
+        <value type="string" value="gimp.desktop"/>
+        <value type="string" value="chrome-agimnkijcaahngcdmfeangaknmldooml-Default.desktop"/>
+        <value type="string" value="chrome-cinhimbnkkaeohfgghhklpknlkffjgod-Default.desktop"/>
+      </property>
       <property name="position-profile-alternate" type="bool" value="true"/>
       <property name="recent" type="array">
-        <value type="string" value="chrome-hnpfjngllnobngcgfapefoaidbinmjnm-Default.desktop"/>
+        <value type="string" value="proton.vpn.app.gtk.desktop"/>
+        <value type="string" value="chrome-fmgjjmmmlfnkbppncabfkddbjimcfncm-Default.desktop"/>
+        <value type="string" value="org.kde.kdeconnect.app.desktop"/>
+        <value type="string" value="abdownloadmanager.desktop"/>
+        <value type="string" value="org.torproject.torbrowser-launcher.desktop"/>
+        <value type="string" value="xfce4-color-settings.desktop"/>
+        <value type="string" value="chrome-ncmjhecbjeaamljdfahankockkkdmedg-Default.desktop"/>
+        <value type="string" value="org.telegram.desktop.desktop"/>
+        <value type="string" value="chrome-dbjphokaleffeehcjmadaemnceglddkd-Default.desktop"/>
         <value type="string" value="kali-undercover.desktop"/>
       </property>
       <property name="show-command-profile" type="bool" value="false"/>
@@ -61,11 +91,29 @@
     </property>
     <property name="plugin-13" type="string" value="netload"/>
     <property name="plugin-14" type="string" value="systray">
+      <property name="hidden-legacy-items" type="array">
+      </property>
+      <property name="hide-new-items" type="bool" value="false"/>
+      <property name="icon-size" type="int" value="0"/>
+      <property name="known-items" type="array">
+        <value type="string" value="1"/>
+        <value type="string" value="proton.vpn.app.gtk"/>
+        <value type="string" value="TelegramDesktop"/>
+        <value type="string" value="blueman"/>
+      </property>
       <property name="known-legacy-items" type="array">
+        <value type="string" value="wi-fi network connection “sumit 1” active: sumit (61%)"/>
+        <value type="string" value="wi-fi network connection “sumit 1” active: sumit (63%)"/>
+        <value type="string" value="no network connection"/>
+        <value type="string" value="wi-fi network connection “sumit 1” active: sumit (70%)"/>
+        <value type="string" value="clipman"/>
+        <value type="string" value="xfce4-power-manager"/>
+        <value type="string" value="wi-fi network connection “sumit” active: sumit (63%)"/>
         <value type="string" value="wi-fi network connection “sumit” active: sumit (67%)"/>
         <value type="string" value="onboard"/>
         <value type="string" value="networkmanager applet"/>
       </property>
+      <property name="single-row" type="bool" value="false"/>
       <property name="size-max" type="uint" value="22"/>
       <property name="square-icons" type="bool" value="true"/>
       <property name="symbolic-icons" type="bool" value="false"/>
@@ -80,7 +128,7 @@
     </property>
     <property name="plugin-16" type="string" value="pulseaudio">
       <property name="enable-keyboard-shortcuts" type="bool" value="true"/>
-      <property name="known-players" type="string" value="Chrome"/>
+      <property name="known-players" type="string" value="Chrome;moto g45 5G;org.kde.kdeconnect.app"/>
     </property>
     <property name="plugin-17" type="string" value="notification-plugin"/>
     <property name="plugin-18" type="string" value="power-manager-plugin"/>
