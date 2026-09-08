@@ -28,3 +28,6 @@ url = https://github.com/tmux-plugins/tmux-sensible.git
 [submodule "Nordic"]
 	path = Nordic
 	url = https://github.com/EliverLara/Nordic.git
+[submodule "Elegant-grub2-themes"]
+	path = Elegant-grub2-themes
+	url = https://github.com/vinceliuice/Elegant-grub2-themes.git
