@@ -365,6 +365,50 @@ function setup_zshrc() {
 	create_symlink "$PWD/zshrc" "$HOME/.zshrc"
 }
 
+function setup_daily_wallpaper() {
+	print_header "Daily Wallpaper"
+
+	apt_install git
+	apt_install jq
+	apt_install nc netcat-openbsd
+	apt_install find findutils
+
+	local REPO_DIR="$HOME/Public/Daily_Wallpaper"
+	local SCRIPT_PATH="$REPO_DIR/daily_wallpaper.sh"
+	local CRON_SCHEDULE="0 0 * * *"
+	local CRON_RULE="$CRON_SCHEDULE $SCRIPT_PATH 2>&1 | logger -t bing.log"
+
+	print_step "git clone: Daily-Wallpaper"
+	if [ -d "$REPO_DIR" ]; then
+		print_skip
+	else
+		if git clone -q https://github.com/ravirajkarn/Daily-Wallpaper.git "$REPO_DIR" >/dev/null 2>&1; then
+			print_success
+		else
+			print_fail
+			return 1
+		fi
+	fi
+
+	chmod +x "$SCRIPT_PATH" 2>/dev/null || true
+
+	print_step "Running wallpaper script now"
+	nohup bash "$SCRIPT_PATH" >/dev/null 2>&1 &
+	disown
+	print_success
+
+	print_step "cron job: daily_wallpaper"
+	if crontab -l 2>/dev/null | grep -Fq "$SCRIPT_PATH"; then
+		print_skip
+	else
+		(
+			crontab -l 2>/dev/null
+			echo "$CRON_RULE"
+		) | crontab -
+		print_success
+	fi
+}
+
 # _SILENT=$PWD/silent/install.sh
 # if [ ! command -v sddm ] &>/dev/null; then
 #     echo "Installing sddm"
@@ -386,6 +430,7 @@ function main() {
 
 	# 2. Fonts (High Priority)
 	setup_fonts
+	setup_daily_wallpaper
 
 	# 3. Terminal & Shell Core
 	setup_kitty
@@ -405,6 +450,7 @@ function main() {
 	setup_syncthing
 	setup_grub
 	setup_XFconf
+
 }
 
 main "$@"
