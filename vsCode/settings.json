@@ -9,7 +9,7 @@
   "editor.colorDecorators": true,
   "workbench.settings.applyToAllProfiles": ["C_Cpp.autocomplete"],
   "workbench.editor.enablePreview": false,
-  "workbench.colorTheme": "Tokyo Night",
+  "workbench.colorTheme": "Catppuccin Macchiato",
   "workbench.iconTheme": "material-icon-theme",
   "workbench.secondarySideBar.defaultVisibility": "hidden",
   "workbench.colorCustomizations": {
@@ -239,6 +239,13 @@
   },
   "files.associations": {
       "*.css": "tailwindcss"
+  },
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Shellscript
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  "[shellscript]": {
+    "editor.defaultFormatter": "mkhl.shfmt",
+    "editor.formatOnSave": true
   },
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
   // Miscellaneous

@@ -1,178 +1,369 @@
 #!/bin/bash
 set -e
 
+# ==============================================================================
+# 0. SCRIPT LOCATION (fix: don't rely on caller's $PWD)
+# ==============================================================================
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# ==============================================================================
+# 1. GLOBAL COLORS & UI HELPERS
+# ==============================================================================
+RESET='\e[0m'
+BOLD='\e[1m'
+BLUE='\e[34m'
+CYAN='\e[36m'
+GREEN='\e[32m'
+YELLOW='\e[33m'
+RED='\e[31m'
+
+# Formatting helpers for aligned, minimalist output
+print_header() { echo -e "\n${BOLD}${BLUE}:: $1${RESET}"; }
+print_step() { printf "  %-45s " "$1"; }
+print_success() { printf "[ ${GREEN}DONE${RESET} ]\n"; }
+print_skip() { printf "[ ${YELLOW}SKIP${RESET} ]\n"; }
+print_fail() { printf "[ ${RED}FAIL${RESET} ]\n"; }
+print_info() { echo -e "  ${CYAN}$1${RESET}"; }
+
+# ==============================================================================
+# 2. CORE FUNCTIONS
+# ==============================================================================
+
 function apt_install() {
-    CMD_NAME="$1"
-    PKG_NAME="${2:-$1}"
+	local CMD_NAME="$1"
+	local PKG_NAME="${2:-$1}"
 
-    if [ -z "$CMD_NAME" ]; then
-        echo "Error: No package name provided."
-        return 1
-    fi
-
-    if ! command -v $CMD_NAME &>/dev/null; then
-        echo "Installing $PKG_NAME..."
-        sudo apt-get install -y "$PKG_NAME"
-    else
-        echo "$PKG_NAME is already installed."
-    fi
+	print_step "apt: $PKG_NAME"
+	if ! command -v "$CMD_NAME" &>/dev/null; then
+		if sudo apt-get install -y "$PKG_NAME" >/dev/null 2>&1; then
+			print_success
+		else
+			print_fail
+			return 1
+		fi
+	else
+		print_skip
+	fi
 }
 
 function pipx_install() {
-    APP="$1"
+	local APP="$1"
 
-    if [ -z "$APP" ]; then
-        echo "Error: No package name provided."
-        return 1
-    fi
+	print_step "pipx: $APP"
+	if ! command -v "$APP" &>/dev/null; then
+		if pipx install "$APP" >/dev/null 2>&1; then
+			print_success
+		else
+			print_fail
+			return 1
+		fi
+	else
+		print_skip
+	fi
+}
 
-    if ! command -v $APP &>/dev/null; then
-        echo "Installing $APP..."
-        pipx install "$APP"
-    else
-        echo "$APP is already installed."
-    fi
+# The Master Symlink Engine: Handles backups, readlink skips, and forcing replacements
+function create_symlink() {
+	local src="$1"
+	local target="$2"
+	local name
+	name=$(basename "$target")
+
+	print_step "link: $name"
+
+	# 1. Ensure parent directory exists
+	mkdir -p "$(dirname "$target")"
+
+	# 2. Backup if it's a real file
+	if [ -e "$target" ] && [ ! -L "$target" ]; then
+		mv "$target" "${target}.bak"
+		ln -sf "$src" "$target"
+		print_success
+	# 3. Skip if symlink already points to the correct dotfile
+	elif [ -L "$target" ] && [ "$(readlink "$target")" = "$src" ]; then
+		print_skip
+	# 4. Otherwise, create/force replace the link
+	else
+		ln -sf "$src" "$target"
+		print_success
+	fi
+}
+
+# ==============================================================================
+# 3. SETUP MODULES
+# ==============================================================================
+
+function setup_pipx() {
+	print_header "Pipx"
+	apt_install pipx
+	print_step "pipx: ensurepath"
+	pipx ensurepath >/dev/null 2>&1 || true
+	print_success
 }
 
 function setup_syncthing() {
-    echo "syncthing: "
+	print_header "Syncthing"
+	apt_install syncthing
 
-    apt_install syncthing
-    
-    if ! systemctl is-active --quiet syncthing@$USER.service; then
-        echo -e "\nStarting and enabling syncthing service..."
-        sudo systemctl enable --now syncthing@$USER.service
-    else
-        echo -e "\nSyncthing service is already running."
-    fi
-    echo
+	print_step "service: syncthing@$USER.service"
+	if ! systemctl is-active --quiet syncthing@$USER.service; then
+		sudo systemctl enable --now syncthing@$USER.service >/dev/null 2>&1
+		print_success
+	else
+		print_skip
+	fi
 }
 
 function setup_conan() {
-    echo "conan: "
-    _CONAN="$HOME/.conan2/profiles"
-    
-    pipx_install conan
-
-    mkdir -p "$HOME/.conan2"
-
-    if [ -e "$_CONAN" ] || [ -L "$_CONAN" ] ; then
-        echo -e "\nremoving $_CONAN"
-        rm -rf "$_CONAN"
-    else
-        echo -e "\nnot found $_CONAN"
-    fi
-
-    echo -e "\ncreating symbolic link: $_CONAN "
-    ln -s "$PWD/conan" "$_CONAN"
-    echo ""
+	print_header "Conan"
+	pipx_install conan
+	create_symlink "$SCRIPT_DIR/conan" "$HOME/.conan2/profiles"
 }
-
 
 function setup_grub() {
-    echo "GRUB: "
-    _GRUB="/usr/share/grub/themes/Elegant-forest-window-right-dark"
-    _SOURCE="$PWD/Elegant-forest-window-right-dark"
+	print_header "GRUB Bootloader"
+	local _GRUB="/usr/share/grub/themes/Elegant-forest-window-right-dark"
+	local _SOURCE="$SCRIPT_DIR/Elegant-forest-window-right-dark"
 
-    if [ -e "$_GRUB" ] || [ -L "$_GRUB" ]; then
-        echo "removing $_GRUB"
-        sudo rm -rf "$_GRUB"
-    else
-        echo "not found $_GRUB"
-    fi
+	print_step "link: GRUB Theme"
+	if [ -L "$_GRUB" ] && [ "$(readlink "$_GRUB")" = "$_SOURCE" ]; then
+		print_skip
+	else
+		sudo rm -rf "$_GRUB"
+		sudo ln -s "$_SOURCE" "$_GRUB"
+		print_success
+	fi
 
-    echo "creating symbolic link: $_GRUB "
-
-    sudo ln -s "$_SOURCE" "$_GRUB"
-    sudo update-grub
-
-    echo
+	print_step "Updating GRUB configuration"
+	sudo update-grub >/dev/null 2>&1
+	print_success
 }
 
-
-
 function setup_kitty() {
-    echo "Kitty: "
-    KITTY="$HOME/.config/kitty"
-
-    apt_install kitty
-
-    if [ -e "$KITTY" ] || [ -L "$KITTY" ]; then
-        echo "removing $KITTY" 
-        rm -rf "$KITTY"
-    else
-        echo "not found $KITTY"
-    fi
-
-    echo "creating symbolic link: $KITTY " 
-    ln -s "$PWD/kitty" "$KITTY"
-
-    echo
+	print_header "Kitty Terminal"
+	apt_install kitty
+	create_symlink "$SCRIPT_DIR/kitty" "$HOME/.config/kitty"
 }
 
 function setup_fzf() {
-    echo "fzf: "
-    apt_install fzf
-    echo
+	print_header "FZF"
+	apt_install fzf
 }
 
 function setup_lazygit() {
-    echo "lazygit: "
-    apt_install lazygit
-    echo
+	print_header "LazyGit"
+	apt_install lazygit
 }
 
 function setup_fd_find() {
-    echo "fd-find: "
-    apt_install fd fd-find
-    echo
+	print_header "FD Find"
+	apt_install fdfind fd-find
+
+	print_step "link: fd -> fdfind shim"
+	mkdir -p "$HOME/.local/bin"
+	if command -v fdfind &>/dev/null && ! command -v fd &>/dev/null; then
+		ln -sf "$(command -v fdfind)" "$HOME/.local/bin/fd"
+		print_success
+	else
+		print_skip
+	fi
 }
 
 function setup_ripgrep() {
-    echo "ripgrep: "
-    apt_install rg ripgrep
-    echo
+	print_header "RipGrep"
+	apt_install rg ripgrep
 }
 
 function setup_unzip() {
-    echo "unzip: "
-    apt_install unzip
-    echo
+	print_header "Unzip"
+	apt_install unzip
 }
 
 function setup_lua() {
-    echo "lua: "
-    sudo apt-get install -y lua5.4 liblua5.4-dev luajit libluajit-5.1-dev luarocks
-    echo
+	print_header "Lua"
+	print_step "apt: lua5.4 stack"
+	if sudo apt-get install -y lua5.4 liblua5.4-dev luajit libluajit-5.1-dev luarocks >/dev/null 2>&1; then
+		print_success
+	else
+		print_fail
+	fi
 }
 
 function setup_neovim() {
-    echo "Neo Vim: "
-    _NVIM="$HOME/.config/nvim"
-    
-    # Dependency 
-    setup_fzf
-    setup_lazygit
-    setup_fd_find
-    setup_ripgrep
-    setup_unzip
-    setup_lua
-    apt_install gcc build-essential
+	print_header "NeoVim Dependencies"
 
-    apt_install nvim neovim 
+	# Using the updated quiet functions
+	setup_fzf
+	setup_lazygit
+	setup_fd_find
+	setup_ripgrep
+	setup_unzip
+	setup_lua
+	apt_install gcc build-essential
 
-    if [ -e "$_NVIM" ] || [ -L "$_NVIM" ]; then
-        echo -e "\nremoving $_NVIM"
-        rm -rf "$_NVIM"
-    else
-        echo -e "\nnot found $_NVIM"
-    fi
-
-    echo -e "\ncreating symbolic link: $_NVIM "
-    ln -s "$PWD/nvim" "$_NVIM"
-    echo
+	print_header "NeoVim"
+	apt_install nvim neovim
+	create_symlink "$SCRIPT_DIR/nvim" "$HOME/.config/nvim"
 }
 
+function setup_tlp() {
+	print_header "TLP Power Management"
+	apt_install tlp
+
+	local _TLP_DIR="/etc/tlp.d"
+	sudo mkdir -p "$_TLP_DIR"
+
+	for file in "$SCRIPT_DIR/tlp"/*; do
+		if [ -f "$file" ]; then
+			local filename target
+			filename=$(basename "$file")
+			target="$_TLP_DIR/$filename"
+
+			print_step "link (sudo): $filename"
+
+			if [ -e "$target" ] && [ ! -L "$target" ]; then
+				sudo mv "$target" "${target}.bak"
+			fi
+
+			# Since TLP requires sudo, we handle the symlink manually here
+			if [ -L "$target" ] && [ "$(readlink "$target")" = "$file" ]; then
+				print_skip
+			else
+				sudo ln -sf "$file" "$target"
+				print_success
+			fi
+		fi
+	done
+
+	print_step "service: tlp.service"
+	sudo systemctl enable --now tlp.service >/dev/null 2>&1
+	print_success
+}
+
+function setup_tmux() {
+	print_header "Tmux"
+	apt_install tmux
+	apt_install acpi
+
+	create_symlink "$SCRIPT_DIR/tmux" "$HOME/.config/tmux"
+
+	if tmux ls &>/dev/null; then
+		print_info "Tmux session detected. Sourcing live configuration..."
+		tmux source-file "$HOME/.config/tmux/tmux.conf"
+	fi
+}
+
+function setup_vsCode() {
+	print_header "VS Code"
+	create_symlink "$SCRIPT_DIR/vsCode/settings.json" "$HOME/.config/Code/User/settings.json"
+}
+
+function setup_tldr() {
+	print_header "TLDR (tealdeer)"
+	apt_install tldr tealdeer
+
+	print_step "Updating tldr database"
+	if command -v tldr &>/dev/null; then
+		tldr --update >/dev/null 2>&1
+		print_success
+	else
+		print_skip
+	fi
+}
+
+function setup_XFconf() {
+	print_header "XFCE Configuration (xfconf)"
+	_XFCONF_DIR="$HOME/.config/xfce4/xfconf"
+
+	print_step "Stopping xfconfd daemon"
+	if pgrep -x "xfconfd" >/dev/null; then
+		killall xfconfd
+	fi
+	print_success
+
+	print_step "Updating path to /home/$USER"
+	find "$PWD/xfconf" -type f -exec sed -i "s|/home/[^/]*|/home/$USER|g" {} +
+	print_success
+
+	create_symlink "$PWD/xfconf" "$_XFCONF_DIR"
+
+	print_step "Starting xfconfd & applying themes"
+	xfsettingsd --replace &>/dev/null &
+	disown
+	print_success
+}
+
+function setup_fonts() {
+	print_header "Fonts Setup"
+
+	apt_install wget
+
+	local _FONT_DIR="$HOME/.local/share/fonts"
+	mkdir -p "$_FONT_DIR"
+
+	local URLS=(
+		"https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"
+		"https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip"
+		"https://github.com/i-tu/Hasklig/releases/download/v1.2/Hasklig-1.2.zip"
+		"https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/Monoid.zip"
+		"https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/CascadiaCode.zip"
+		"https://github.com/be5invis/Iosevka/releases/download/v34.8.1/PkgTTC-SGr-Iosevka-34.8.1.zip"
+		"https://github.com/be5invis/Iosevka/releases/download/v34.8.1/PkgTTC-SGr-IosevkaTerm-34.8.1.zip"
+		"https://github.com/be5invis/Iosevka/releases/download/v34.8.1/PkgTTC-SGr-IosevkaTermSlab-34.8.1.zip"
+		"https://github.com/be5invis/Iosevka/releases/download/v34.8.1/PkgTTC-SGr-IosevkaSlab-34.8.1.zip"
+		"https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/SourceCodePro.zip"
+		"https://github.com/source-foundry/Hack/releases/download/v3.003/Hack-v3.003-ttf.tar.gz"
+		"https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/RobotoMono.zip"
+	)
+
+	print_info "Synchronizing fonts..."
+	local _TMP_DIR
+	_TMP_DIR=$(mktemp -d)
+
+	local SAVE_CURSOR='\e[s'
+	local RESTORE_CLEAR='\e[u\e[J'
+
+	for url in "${URLS[@]}"; do
+		local filename folder_name target_dir
+		filename=$(basename "$url")
+		filename="${filename%%\?*}"
+		folder_name=$(echo "$filename" | sed -e 's/\.zip$//' -e 's/\.tar\.gz$//')
+		target_dir="$_FONT_DIR/$folder_name"
+
+		printf "  %-45s ${SAVE_CURSOR}\n" "$folder_name"
+
+		if [ -d "$target_dir" ]; then
+			printf "${RESTORE_CLEAR}[ ${YELLOW}SKIP${RESET} ]\n"
+			continue
+		fi
+
+		if wget -q --show-progress --timeout=15 --tries=3 -O "$_TMP_DIR/$filename" "$url"; then
+			mkdir -p "$target_dir"
+			case "$filename" in
+			*.zip) unzip -q -o "$_TMP_DIR/$filename" -d "$target_dir" || true ;;
+			*.tar.gz | *.tgz) tar -xzf "$_TMP_DIR/$filename" -C "$target_dir" || true ;;
+			*) mv "$_TMP_DIR/$filename" "$target_dir/" || true ;;
+			esac
+			printf "${RESTORE_CLEAR}[ ${GREEN}DONE${RESET} ]\n"
+		else
+			printf "${RESTORE_CLEAR}[ ${RED}FAIL${RESET} ]\n"
+		fi
+
+		rm -f "$_TMP_DIR/$filename"
+	done
+
+	rm -rf "$_TMP_DIR"
+
+	print_step "Updating system font cache"
+	fc-cache -f -v >/dev/null || true
+	print_success
+}
+
+function setup_zshrc() {
+	print_header "Zsh Configuration"
+
+	create_symlink "$PWD/zshrc" "$HOME/.zshrc"
+}
 
 # _SILENT=$PWD/silent/install.sh
 # if [ ! command -v sddm ] &>/dev/null; then
@@ -182,212 +373,38 @@ function setup_neovim() {
 # $_SILENT
 # echo
 
-function setup_tlp() {
-    echo "TLP: "
-    _TLP_DIR="/etc/tlp.d"
-    _MY_CONF="$PWD/tlp"
+function main() {
+	sudo apt-get update
+	echo
+	setup_pipx
+	pipx upgrade-all || true
+	echo
 
-    apt_install tlp
-    
-    sudo mkdir -p "$_TLP_DIR"
+	# 1. Core Utilities & Base Tools
+	apt_install wget2
+	apt_install unzip
 
-    echo -e "\ncreating symbolic link in: $_TLP_DIR"
-    for file in "$_MY_CONF"/*; do 
-        if [ -f "$file" ]; then
-            filename=$(basename "$file")
-            target="$_TLP_DIR/$filename"
+	# 2. Fonts (High Priority)
+	setup_fonts
 
-            if [ -e "$target" ] && [ ! -L "$target" ]; then
-                echo " -> Backing up existing regular file: $filename"
-                sudo mv "$target" "${target}.bak"
-            fi
-            
-            sudo ln -sf "$file" "$target"
-            echo " -> Linked $filename"
-        fi
-    done
+	# 3. Terminal & Shell Core
+	setup_kitty
+	setup_zshrc
+	setup_tmux
 
-    sudo systemctl enable --now tlp.service
-    echo
-}
+	# 4. Editors & Development Tools
+	setup_neovim
+	setup_vsCode
+	setup_conan
+	setup_tldr
+	apt_install shfmt
+	apt_install inkscape
 
-function setup_tmux() {
-    echo "tmux: "
-    _TMUX_DIR="$HOME/.config/tmux"
-    _MY_CONF="$PWD/tlp"
-    
-    apt_install tmux
-    apt_install acpi
-
-    mkdir -p "$HOME/.config"
-    
-    if [ -e "$_TMUX_DIR" ]; then
-        echo -e "\nremoving $_TMUX_DIR" 
-        rm -rf "$_TMUX_DIR"
-    else
-        echo -e "\nnot found $_TMUX_DIR"
-    fi
-
-    echo -e "\ncreating symbolic link: $_TMUX_DIR"
-    ln -s "$PWD/tmux" "$_TMUX_DIR"
-
-    if tmux ls &> /dev/null; then 
-        echo -e "\nTmux session detected. Applying new configuration..."
-        tmux source-file "$_TMUX_DIR/tmux.conf"
-    fi
-    
-    echo
-}
-
-function setup_fonts() {
-    # --- Define Colors ---
-    local RESET='\e[0m'
-    local BOLD='\e[1m'
-    local BLUE='\e[34m'
-    local CYAN='\e[36m'
-    local GREEN='\e[32m'
-    local YELLOW='\e[33m'
-    local RED='\e[31m'
-
-    echo -e "${BOLD}${BLUE}:: Fonts Setup${RESET}"
-
-    _FONT_DIR="$HOME/.local/share/fonts"
-    mkdir -p "$_FONT_DIR"
-
-    URLS=(
-        "https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"
-        "https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip"
-        "https://github.com/i-tu/Hasklig/releases/download/v1.2/Hasklig-1.2.zip"
-        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/Monoid.zip"
-        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/CascadiaCode.zip"
-        "https://github.com/be5invis/Iosevka/releases/download/v34.8.1/PkgTTC-SGr-Iosevka-34.8.1.zip"
-        "https://github.com/be5invis/Iosevka/releases/download/v34.8.1/PkgTTC-SGr-IosevkaTerm-34.8.1.zip"
-        "https://github.com/be5invis/Iosevka/releases/download/v34.8.1/PkgTTC-SGr-IosevkaTermSlab-34.8.1.zip"
-        "https://github.com/be5invis/Iosevka/releases/download/v34.8.1/PkgTTC-SGr-IosevkaSlab-34.8.1.zip"
-        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/SourceCodePro.zip"
-        "https://github.com/source-foundry/Hack/releases/download/v3.003/Hack-v3.003-ttf.tar.gz"
-        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/RobotoMono.zip"
-    )
-
-    echo -e "\n${CYAN}Synchronizing fonts...${RESET}"
-    _TMP_DIR=$(mktemp -d)
-
-    for url in "${URLS[@]}"; do
-        filename=$(basename "$url")
-        filename="${filename%%\?*}"
-        folder_name=$(echo "$filename" | sed -e 's/\.zip$//' -e 's/\.tar\.gz$//')
-        target_dir="$_FONT_DIR/$folder_name"
-
-        # Print the font name and immediately drop to the next line (\n)
-        printf "  %-45s \n" "$folder_name"
-
-        if [ -d "$target_dir" ]; then
-            # Move up 1 line (\e[1A), print SKIP aligned, clear line below (\e[K)
-            printf "\e[1A\r  %-45s [ ${YELLOW}SKIP${RESET} ]\n\e[K" "$folder_name"
-            continue
-        fi
-        
-        # wget outputs a clean progress bar on the current line
-        if wget -q --show-progress -O "$_TMP_DIR/$filename" "$url"; then
-            
-            # Extract silently
-            mkdir -p "$target_dir"
-            case "$filename" in
-                *.zip)
-                    unzip -q -o "$_TMP_DIR/$filename" -d "$target_dir"
-                    ;;
-                *.tar.gz|*.tgz)
-                    tar -xzf "$_TMP_DIR/$filename" -C "$target_dir"
-                    ;;
-                *)
-                    mv "$_TMP_DIR/$filename" "$target_dir/"
-                    ;;
-            esac
-            
-            # MAGIC: Move up 2 lines (\e[2A), overwrite with DONE, move down, clear old progress bar (\e[K)
-            printf "\e[2A\r  %-45s [ ${GREEN}DONE${RESET} ]\n\e[K" "$folder_name"
-        else
-            # MAGIC: Move up 2 lines (\e[2A), overwrite with FAIL, move down, clear old progress bar (\e[K)
-            printf "\e[2A\r  %-45s [ ${RED}FAIL${RESET} ]\n\e[K" "$folder_name"
-        fi
-        
-        rm -f "$_TMP_DIR/$filename"
-    done
-
-    rm -rf "$_TMP_DIR"
-
-    echo -ne "\n${CYAN}Updating system font cache... ${RESET}"
-    fc-cache -f -v > /dev/null
-    echo -e "${GREEN}DONE${RESET}"
-
-    echo -e "${BOLD}${GREEN}:: Fonts setup complete!${RESET}\n"
-}
-
-
-# _CODE="$HOME/.config/Code/User/settings.json"
-# if [ -f $_CODE ]; then
-#     echo "removing $_CODE" && rm -r $_CODE
-# else
-#     echo "not found $_CODE"
-# fi
-# echo "creating symbolic link: $_CODE " && ln -s $PWD/vsCode/settings.json $_CODE
-# echo
-
-# _XFCONF="$HOME/.config/xfce4/xfconf"
-# if [ -d $_XFCONF ]; then
-#     echo "removing $_XFCONF" && rm -r $_XFCONF
-# else
-#     echo "not found $_XFCONF"
-# fi
-# echo "creating symbolic link: $_XFCONF " && ln -s $PWD/xfconf $_XFCONF
-# echo -e "\033[0;31m----------> run 'grep -rEI "sumit" --exclude-dir=.git .' command and change user <--------------\033[0m"
-# echo
-
-# ZSH_RC="$HOME/.zshrc"
-# if [ -f $ZSH_RC ]; then
-#     echo "removing $ZSH_RC" && rm $ZSH_RC
-# else
-#     echo "not found $ZSH_RC"
-# fi
-# echo "creating symbolic link: .zshrc" && ln -s $PWD/zshrc $ZSH_RC
-# echo
-
-# # VSCode
-# # sudo apt install shfmt
-
-
-function setup_tldr() {
-    echo "tldr: "
-    apt_install tldr tealdeer
-    
-    if command -v tldr &>/dev/null; then
-        echo -e "\nUpdating tldr database..."
-        tldr --update
-    else
-        echo -e "\nFailed to install tldr. Skipping update."
-    fi
-
-    echo
-}
-
-
-
-main() {
-    # sudo apt-get update
-    # echo
-    # pipx upgrade-all
-    # echo
-    # setup_syncthing
-    # setup_conan
-    # setup_grub
-    # setup_kitty
-    # setup_neovim
-    # setup_tlp
-    # setup_tmux
-    # setup_tldr
-    # apt_install wget2
-    # apt_install inkscape
-    setup_fonts
+	# 5. System Daemons & Services
+	setup_tlp
+	setup_syncthing
+	setup_grub
+	setup_XFconf
 }
 
 main "$@"
