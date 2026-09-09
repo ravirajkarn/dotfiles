@@ -29,4 +29,7 @@
   <property name="notification-log" type="bool" value="true"/>
   <property name="notify-location" type="string" value="top-right"/>
   <property name="theme" type="string" value="Smoke"/>
+  <property name="plugin" type="empty">
+    <property name="log-only-today" type="bool" value="false"/>
+  </property>
 </channel>

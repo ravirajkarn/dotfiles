@@ -17,15 +17,14 @@
         <value type="int" value="10"/>
         <value type="int" value="11"/>
         <value type="int" value="12"/>
-        <value type="int" value="13"/>
         <value type="int" value="14"/>
         <value type="int" value="15"/>
         <value type="int" value="16"/>
         <value type="int" value="17"/>
         <value type="int" value="18"/>
+        <value type="int" value="21"/>
         <value type="int" value="19"/>
         <value type="int" value="20"/>
-        <value type="int" value="21"/>
         <value type="int" value="22"/>
       </property>
       <property name="position" type="string" value="p=6;x=0;y=0"/>
@@ -34,77 +33,48 @@
     </property>
   </property>
   <property name="plugins" type="empty">
-    <property name="clipman" type="empty">
-      <property name="settings" type="empty">
-        <property name="enable-actions" type="bool" value="true"/>
-        <property name="max-images-in-history" type="uint" value="1"/>
-        <property name="add-primary-clipboard" type="bool" value="false"/>
-      </property>
-      <property name="tweaks" type="empty">
-        <property name="popup-at-pointer" type="bool" value="true"/>
-      </property>
-    </property>
     <property name="plugin-1" type="string" value="whiskermenu">
-      <property name="button-icon" type="string" value="/home/sumit/Documents/dotfiles/shapes.png"/>
       <property name="favorites" type="array">
+        <value type="string" value="xfce4-terminal-emulator.desktop"/>
+        <value type="string" value="root-terminal.desktop"/>
         <value type="string" value="xfce4-file-manager.desktop"/>
         <value type="string" value="xfce-text-editor.desktop"/>
-        <value type="string" value="code.desktop"/>
+        <value type="string" value="xfce4-web-browser.desktop"/>
+        <value type="string" value="kali-www.desktop"/>
+        <value type="string" value="kali-tools.desktop"/>
+        <value type="string" value="kali-docs.desktop"/>
+        <value type="string" value="kali-bugs.desktop"/>
+        <value type="string" value="offsec-training.desktop"/>
+        <value type="string" value="exploit-database.desktop"/>
+        <value type="string" value="vulnhub.desktop"/>
       </property>
-      <property name="position-profile-alternate" type="bool" value="true"/>
-      <property name="recent" type="array">
-        <value type="string" value="xfce4-clipman.desktop"/>
-        <value type="string" value="xfce4-clipman-settings.desktop"/>
-        <value type="string" value="xfce4-color-settings.desktop"/>
-        <value type="string" value="org.telegram.desktop.desktop"/>
-        <value type="string" value="kali-undercover.desktop"/>
-      </property>
-      <property name="show-command-profile" type="bool" value="false"/>
+      <property name="show-button-icon" type="bool" value="true"/>
+      <property name="show-button-title" type="bool" value="false"/>
+      <property name="button-icon" type="string" value="/home/sumit/Documents/dotfiles/shapes.png"/>
     </property>
     <property name="plugin-10" type="string" value="separator"/>
     <property name="plugin-11" type="string" value="tasklist">
-      <property name="flat-buttons" type="bool" value="false"/>
-      <property name="grouping" type="bool" value="false"/>
-      <property name="include-all-monitors" type="bool" value="true"/>
-      <property name="middle-click" type="uint" value="0"/>
+      <property name="grouping" type="uint" value="1"/>
+      <property name="middle-click" type="uint" value="1"/>
       <property name="show-handle" type="bool" value="false"/>
       <property name="show-labels" type="bool" value="false"/>
-      <property name="show-tooltips" type="bool" value="true"/>
       <property name="sort-order" type="uint" value="0"/>
-      <property name="switch-workspace-on-unminimize" type="bool" value="false"/>
+      <property name="flat-buttons" type="bool" value="false"/>
     </property>
     <property name="plugin-12" type="string" value="separator">
       <property name="expand" type="bool" value="true"/>
       <property name="style" type="uint" value="0"/>
     </property>
-    <property name="plugin-13" type="string" value="netload"/>
     <property name="plugin-14" type="string" value="systray">
-      <property name="hidden-legacy-items" type="array">
-      </property>
-      <property name="hide-new-items" type="bool" value="false"/>
-      <property name="icon-size" type="int" value="0"/>
-      <property name="known-items" type="array">
-        <value type="string" value="1"/>
-        <value type="string" value="proton.vpn.app.gtk"/>
-        <value type="string" value="TelegramDesktop"/>
-        <value type="string" value="blueman"/>
-      </property>
-      <property name="known-legacy-items" type="array">
-        <value type="string" value="wi-fi network connection “sumit 1” active: sumit (61%)"/>
-        <value type="string" value="wi-fi network connection “sumit 1” active: sumit (63%)"/>
-        <value type="string" value="no network connection"/>
-        <value type="string" value="wi-fi network connection “sumit 1” active: sumit (70%)"/>
-        <value type="string" value="clipman"/>
-        <value type="string" value="xfce4-power-manager"/>
-        <value type="string" value="wi-fi network connection “sumit” active: sumit (63%)"/>
-        <value type="string" value="wi-fi network connection “sumit” active: sumit (67%)"/>
-        <value type="string" value="onboard"/>
-        <value type="string" value="networkmanager applet"/>
-      </property>
-      <property name="single-row" type="bool" value="false"/>
       <property name="size-max" type="uint" value="22"/>
       <property name="square-icons" type="bool" value="true"/>
-      <property name="symbolic-icons" type="bool" value="false"/>
+      <property name="symbolic-icons" type="bool" value="true"/>
+      <property name="known-legacy-items" type="array">
+        <value type="string" value="clipman"/>
+        <value type="string" value="wi-fi network connection “sumit 1” active: sumit (72%)"/>
+      </property>
+      <property name="icon-size" type="int" value="0"/>
+      <property name="menu-is-primary" type="bool" value="false"/>
     </property>
     <property name="plugin-15" type="string" value="genmon">
       <property name="command" type="string" value="/usr/share/kali-themes/xfce4-panel-genmon-vpnip.sh"/>
@@ -116,22 +86,26 @@
     </property>
     <property name="plugin-16" type="string" value="pulseaudio">
       <property name="enable-keyboard-shortcuts" type="bool" value="true"/>
-      <property name="known-players" type="string" value="Chrome;moto g45 5G;org.kde.kdeconnect.app"/>
+      <property name="rec-indicator-persistent" type="bool" value="false"/>
+      <property name="multimedia-keys-to-all" type="bool" value="false"/>
     </property>
     <property name="plugin-17" type="string" value="notification-plugin"/>
     <property name="plugin-18" type="string" value="power-manager-plugin"/>
     <property name="plugin-19" type="string" value="clock">
-      <property name="digital-date-format" type="string" value="%d %B %Y"/>
-      <property name="digital-layout" type="uint" value="0"/>
-      <property name="digital-time-font" type="string" value="Cantarell 11"/>
+      <property name="digital-layout" type="uint" value="1"/>
+      <property name="digital-time-font" type="string" value="SauceCodePro Nerd Font Propo Bold 11"/>
       <property name="digital-time-format" type="string" value="%I:%M %p"/>
-      <property name="show-week-numbers" type="bool" value="false"/>
+      <property name="digital-date-font" type="string" value="SauceCodePro Nerd Font Bold 10"/>
+      <property name="digital-date-format" type="string" value="%d %b %Y"/>
+      <property name="show-week-numbers" type="bool" value="true"/>
     </property>
     <property name="plugin-2" type="string" value="separator"/>
     <property name="plugin-20" type="string" value="separator">
+      <property name="style" type="uint" value="1"/>
+    </property>
+    <property name="plugin-21" type="string" value="separator">
       <property name="style" type="uint" value="0"/>
     </property>
-    <property name="plugin-21" type="string" value="separator"/>
     <property name="plugin-22" type="string" value="actions">
       <property name="appearance" type="uint" value="0"/>
       <property name="items" type="array">
@@ -151,24 +125,24 @@
     </property>
     <property name="plugin-3" type="string" value="showdesktop"/>
     <property name="plugin-4" type="string" value="directorymenu">
-      <property name="base-directory" type="string" value="/home/sumit/>
+      <property name="base-directory" type="string" value="/home/sumit"/>
       <property name="icon-name" type="string" value="system-file-manager"/>
       <property name="new-document" type="bool" value="false"/>
       <property name="new-folder" type="bool" value="false"/>
     </property>
     <property name="plugin-5" type="string" value="launcher">
       <property name="items" type="array">
-        <value type="string" value="17888382651.desktop"/>
+        <value type="string" value="17889577553.desktop"/>
       </property>
     </property>
     <property name="plugin-6" type="string" value="launcher">
       <property name="items" type="array">
-        <value type="string" value="17888382872.desktop"/>
+        <value type="string" value="17889577362.desktop"/>
       </property>
     </property>
     <property name="plugin-7" type="string" value="launcher">
       <property name="items" type="array">
-        <value type="string" value="17888383003.desktop"/>
+        <value type="string" value="17889577201.desktop"/>
       </property>
       <property name="move-first" type="bool" value="true"/>
     </property>
