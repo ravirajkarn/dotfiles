@@ -1,6 +1,10 @@
 # ~/.zshrc file for zsh interactive shells.
 # see /usr/share/doc/zsh/examples/zshrc for examples
 
+# tmux not showing icon
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
 setopt autocd              # change directory just by typing its name
 #setopt correct            # auto correct mistakes
 setopt interactivecomments # allow comments in interactive mode
@@ -272,4 +276,5 @@ fi
 #
 # Source the global python-argcomplete script
 # [[ -f ~/.bash_competion]]
-: undercover && source ~/.config/zshrc-undercover
+# : undercover && source ~/.config/zshrc-undercover
+

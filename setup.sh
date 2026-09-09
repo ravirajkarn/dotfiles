@@ -212,19 +212,115 @@ function setup_tlp() {
 }
 
 function setup_tmux() {
+    echo "tmux: "
+    _TMUX_DIR="$HOME/.config/tmux"
+    _MY_CONF="$PWD/tlp"
+    
+    apt_install tmux
+    apt_install acpi
 
-    _TMUX="$HOME/.config/tmux"
-    if [ -d $_TMUX ]; then
-        echo "removing $_TMUX" && rm $_TMUX
+    mkdir -p "$HOME/.config"
+    
+    if [ -e "$_TMUX_DIR" ]; then
+        echo -e "\nremoving $_TMUX_DIR" 
+        rm -rf "$_TMUX_DIR"
     else
-        echo "not found $_TMUX"
+        echo -e "\nnot found $_TMUX_DIR"
     fi
-    echo "check acpi command:"
-    if ! command -v acpi >/dev/null 2>&1; then
-        echo "acpi command not found " && sudo apt-get install acpi
+
+    echo -e "\ncreating symbolic link: $_TMUX_DIR"
+    ln -s "$PWD/tmux" "$_TMUX_DIR"
+
+    if tmux ls &> /dev/null; then 
+        echo -e "\nTmux session detected. Applying new configuration..."
+        tmux source-file "$_TMUX_DIR/tmux.conf"
     fi
-    echo "creating symbolic link: tmux " && ln -s $PWD/tmux $_TMUX
+    
     echo
+}
+
+function setup_fonts() {
+    # --- Define Colors ---
+    local RESET='\e[0m'
+    local BOLD='\e[1m'
+    local BLUE='\e[34m'
+    local CYAN='\e[36m'
+    local GREEN='\e[32m'
+    local YELLOW='\e[33m'
+    local RED='\e[31m'
+
+    echo -e "${BOLD}${BLUE}:: Fonts Setup${RESET}"
+
+    _FONT_DIR="$HOME/.local/share/fonts"
+    mkdir -p "$_FONT_DIR"
+
+    URLS=(
+        "https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"
+        "https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip"
+        "https://github.com/i-tu/Hasklig/releases/download/v1.2/Hasklig-1.2.zip"
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/Monoid.zip"
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/CascadiaCode.zip"
+        "https://github.com/be5invis/Iosevka/releases/download/v34.8.1/PkgTTC-SGr-Iosevka-34.8.1.zip"
+        "https://github.com/be5invis/Iosevka/releases/download/v34.8.1/PkgTTC-SGr-IosevkaTerm-34.8.1.zip"
+        "https://github.com/be5invis/Iosevka/releases/download/v34.8.1/PkgTTC-SGr-IosevkaTermSlab-34.8.1.zip"
+        "https://github.com/be5invis/Iosevka/releases/download/v34.8.1/PkgTTC-SGr-IosevkaSlab-34.8.1.zip"
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/SourceCodePro.zip"
+        "https://github.com/source-foundry/Hack/releases/download/v3.003/Hack-v3.003-ttf.tar.gz"
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/RobotoMono.zip"
+    )
+
+    echo -e "\n${CYAN}Synchronizing fonts...${RESET}"
+    _TMP_DIR=$(mktemp -d)
+
+    for url in "${URLS[@]}"; do
+        filename=$(basename "$url")
+        filename="${filename%%\?*}"
+        folder_name=$(echo "$filename" | sed -e 's/\.zip$//' -e 's/\.tar\.gz$//')
+        target_dir="$_FONT_DIR/$folder_name"
+
+        # Print the font name and immediately drop to the next line (\n)
+        printf "  %-45s \n" "$folder_name"
+
+        if [ -d "$target_dir" ]; then
+            # Move up 1 line (\e[1A), print SKIP aligned, clear line below (\e[K)
+            printf "\e[1A\r  %-45s [ ${YELLOW}SKIP${RESET} ]\n\e[K" "$folder_name"
+            continue
+        fi
+        
+        # wget outputs a clean progress bar on the current line
+        if wget -q --show-progress -O "$_TMP_DIR/$filename" "$url"; then
+            
+            # Extract silently
+            mkdir -p "$target_dir"
+            case "$filename" in
+                *.zip)
+                    unzip -q -o "$_TMP_DIR/$filename" -d "$target_dir"
+                    ;;
+                *.tar.gz|*.tgz)
+                    tar -xzf "$_TMP_DIR/$filename" -C "$target_dir"
+                    ;;
+                *)
+                    mv "$_TMP_DIR/$filename" "$target_dir/"
+                    ;;
+            esac
+            
+            # MAGIC: Move up 2 lines (\e[2A), overwrite with DONE, move down, clear old progress bar (\e[K)
+            printf "\e[2A\r  %-45s [ ${GREEN}DONE${RESET} ]\n\e[K" "$folder_name"
+        else
+            # MAGIC: Move up 2 lines (\e[2A), overwrite with FAIL, move down, clear old progress bar (\e[K)
+            printf "\e[2A\r  %-45s [ ${RED}FAIL${RESET} ]\n\e[K" "$folder_name"
+        fi
+        
+        rm -f "$_TMP_DIR/$filename"
+    done
+
+    rm -rf "$_TMP_DIR"
+
+    echo -ne "\n${CYAN}Updating system font cache... ${RESET}"
+    fc-cache -f -v > /dev/null
+    echo -e "${GREEN}DONE${RESET}"
+
+    echo -e "${BOLD}${GREEN}:: Fonts setup complete!${RESET}\n"
 }
 
 
@@ -259,17 +355,39 @@ function setup_tmux() {
 # # VSCode
 # # sudo apt install shfmt
 
+
+function setup_tldr() {
+    echo "tldr: "
+    apt_install tldr tealdeer
+    
+    if command -v tldr &>/dev/null; then
+        echo -e "\nUpdating tldr database..."
+        tldr --update
+    else
+        echo -e "\nFailed to install tldr. Skipping update."
+    fi
+
+    echo
+}
+
+
+
 main() {
-    sudo apt-get update
-    echo
-    pipx upgrade-all
-    echo
+    # sudo apt-get update
+    # echo
+    # pipx upgrade-all
+    # echo
     # setup_syncthing
     # setup_conan
     # setup_grub
     # setup_kitty
     # setup_neovim
     # setup_tlp
+    # setup_tmux
+    # setup_tldr
+    # apt_install wget2
+    # apt_install inkscape
+    setup_fonts
 }
 
 main "$@"
