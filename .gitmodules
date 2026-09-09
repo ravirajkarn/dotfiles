@@ -31,3 +31,6 @@
 [submodule "Elegant-grub2-themes"]
 	path = Elegant-grub2-themes
 	url = https://github.com/vinceliuice/Elegant-grub2-themes.git
+[submodule "kitty/Catppuccin"]
+	path = kitty/Catppuccin
+	url = https://github.com/catppuccin/kitty.git
