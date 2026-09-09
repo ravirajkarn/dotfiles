@@ -38,6 +38,7 @@
       <property name="settings" type="empty">
         <property name="enable-actions" type="bool" value="true"/>
         <property name="max-images-in-history" type="uint" value="1"/>
+        <property name="add-primary-clipboard" type="bool" value="false"/>
       </property>
       <property name="tweaks" type="empty">
         <property name="popup-at-pointer" type="bool" value="true"/>
@@ -49,26 +50,13 @@
         <value type="string" value="xfce4-file-manager.desktop"/>
         <value type="string" value="xfce-text-editor.desktop"/>
         <value type="string" value="code.desktop"/>
-        <value type="string" value="chrome-abnfpfhjmipcnaibcolbacfhgfcmjjbn-Default.desktop"/>
-        <value type="string" value="kitty.desktop"/>
-        <value type="string" value="org.kde.okular.desktop"/>
-        <value type="string" value="chrome-nhpkhfhppiampjblenncchhnipmeafgd-Default.desktop"/>
-        <value type="string" value="onlyoffice-desktopeditors.desktop"/>
-        <value type="string" value="gimp.desktop"/>
-        <value type="string" value="chrome-agimnkijcaahngcdmfeangaknmldooml-Default.desktop"/>
-        <value type="string" value="chrome-cinhimbnkkaeohfgghhklpknlkffjgod-Default.desktop"/>
       </property>
       <property name="position-profile-alternate" type="bool" value="true"/>
       <property name="recent" type="array">
-        <value type="string" value="proton.vpn.app.gtk.desktop"/>
-        <value type="string" value="chrome-fmgjjmmmlfnkbppncabfkddbjimcfncm-Default.desktop"/>
-        <value type="string" value="org.kde.kdeconnect.app.desktop"/>
-        <value type="string" value="abdownloadmanager.desktop"/>
-        <value type="string" value="org.torproject.torbrowser-launcher.desktop"/>
+        <value type="string" value="xfce4-clipman.desktop"/>
+        <value type="string" value="xfce4-clipman-settings.desktop"/>
         <value type="string" value="xfce4-color-settings.desktop"/>
-        <value type="string" value="chrome-ncmjhecbjeaamljdfahankockkkdmedg-Default.desktop"/>
         <value type="string" value="org.telegram.desktop.desktop"/>
-        <value type="string" value="chrome-dbjphokaleffeehcjmadaemnceglddkd-Default.desktop"/>
         <value type="string" value="kali-undercover.desktop"/>
       </property>
       <property name="show-command-profile" type="bool" value="false"/>
@@ -163,24 +151,24 @@
     </property>
     <property name="plugin-3" type="string" value="showdesktop"/>
     <property name="plugin-4" type="string" value="directorymenu">
-      <property name="base-directory" type="string" value="/home/sumit"/>
+      <property name="base-directory" type="string" value="/home/sumit/>
       <property name="icon-name" type="string" value="system-file-manager"/>
       <property name="new-document" type="bool" value="false"/>
       <property name="new-folder" type="bool" value="false"/>
     </property>
     <property name="plugin-5" type="string" value="launcher">
       <property name="items" type="array">
-        <value type="string" value="17805679951.desktop"/>
+        <value type="string" value="17888382651.desktop"/>
       </property>
     </property>
     <property name="plugin-6" type="string" value="launcher">
       <property name="items" type="array">
-        <value type="string" value="17805680132.desktop"/>
+        <value type="string" value="17888382872.desktop"/>
       </property>
     </property>
     <property name="plugin-7" type="string" value="launcher">
       <property name="items" type="array">
-        <value type="string" value="17805680353.desktop"/>
+        <value type="string" value="17888383003.desktop"/>
       </property>
       <property name="move-first" type="bool" value="true"/>
     </property>
