@@ -43,3 +43,6 @@
 [submodule "web-greeter/themes/glorious"]
 	path = web-greeter/themes/glorious
 	url = https://github.com/eromatiya/lightdm-webkit2-theme-glorious.git
+[submodule "web-greeter/themes/litarvan"]
+	path = web-greeter/themes/litarvan
+	url = https://github.com/Litarvan/lightdm-webkit-theme-litarvan.git
