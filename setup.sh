@@ -302,23 +302,49 @@ function setup_tldr() {
 	fi
 }
 
-function setup_XFconf() {
+function setup_xfconf() {
 	print_header "XFCE Configuration (xfconf)"
-	_XFCONF_DIR="$HOME/.config/xfce4/xfconf"
 
+	local MY_CONF="$SCRIPT_DIR/xfconf/xfce-perchannel-xml"
+	local _XFCONF_DIR="$HOME/.config/xfce4/xfconf/xfce-perchannel-xml"
+
+	# 1. Stop the daemon BEFORE touching the files
 	print_step "Stopping xfconfd daemon"
 	if pgrep -x "xfconfd" >/dev/null; then
 		killall xfconfd
+		print_success
+	else
+		print_fail
 	fi
-	print_success
 
-	print_step "Updating path to /home/$USER"
-	find "$SCRIPT_DIR/xfconf" -type f -exec sed -i "s|/home/[^/]*|/home/$USER|g" {} +
-	print_success
+	# 2. Ensure target directory exists
+	mkdir -p "$_XFCONF_DIR"
 
-	create_symlink "$SCRIPT_DIR/xfconf" "$_XFCONF_DIR"
+	# 3. Loop through individual XML configs
+	for CONF in "$MY_CONF"/*; do
 
-	print_step "Starting xfconfd & applying themes"
+		# Changed to -f to ensure it's a file, not a directory
+		if [ -f "$CONF" ]; then
+			local conf_name=$(basename "$CONF")
+			local target="$_XFCONF_DIR/$conf_name"
+
+			print_step "link: $conf_name"
+
+			# Removed sudo: Everything here belongs to the user
+			if [ -e "$target" ] && [ ! -L "$target" ]; then
+				mv "$target" "${target}.bak"
+				ln -sf "$CONF" "$target"
+				print_success
+			elif [ -L "$target" ] && [ "$(readlink "$target")" = "$CONF" ]; then
+				print_skip
+			else
+				ln -sf "$CONF" "$target"
+				print_success
+			fi
+		fi
+	done
+
+	print_step "Starting xfconfd"
 	xfsettingsd --replace &>/dev/null &
 	disown
 	print_success
@@ -415,6 +441,9 @@ function setup_daily_wallpaper() {
 	apt_install nc netcat-openbsd
 	apt_install find findutils
 
+	sudo mkdir -p /usr/share/backgrounds/bing-daily
+	sudo chown $USER:$USER /usr/share/backgrounds/bing-daily
+
 	local REPO_DIR="$HOME/Public/Daily_Wallpaper"
 	local SCRIPT_PATH="$REPO_DIR/daily_wallpaper.sh"
 	local CRON_SCHEDULE="0 0 * * *"
@@ -503,24 +532,24 @@ function setup_nody_greeter() {
 
 		{
 			pushd "$_TEMP_DIR"
-            local LATEST_URL=$(wget -qO- https://api.github.com/repos/JezerM/nody-greeter/releases/latest | grep "browser_download_url.*debian\.deb" | cut -d '"' -f 4)
-            local DEB_FILE=$(basename "$LATEST_URL")
+			local LATEST_URL=$(wget -qO- https://api.github.com/repos/JezerM/nody-greeter/releases/latest | grep "browser_download_url.*debian\.deb" | cut -d '"' -f 4)
+			local DEB_FILE=$(basename "$LATEST_URL")
 
-            echo "========================================"
-            echo "DOWNLOAD START: $LATEST_URL"
-            echo "DESTINATION: $_TEMP_DIR/$DEB_FILE"
-            echo "========================================"
+			echo "========================================"
+			echo "DOWNLOAD START: $LATEST_URL"
+			echo "DESTINATION: $_TEMP_DIR/$DEB_FILE"
+			echo "========================================"
 
-            wget -q "$LATEST_URL"
+			wget -q "$LATEST_URL"
 
-            if [ -f "$DEB_FILE" ]; then
-                echo "DOWNLOAD SUCCESS: $DEB_FILE verified at $_TEMP_DIR"
-                echo "Starting installation..."
-                sudo apt-get install -y "./$DEB_FILE"
-            else
-                echo "DOWNLOAD FAIL: $DEB_FILE was not found in $_TEMP_DIR after wget!"
-                exit 1 
-            fi
+			if [ -f "$DEB_FILE" ]; then
+				echo "DOWNLOAD SUCCESS: $DEB_FILE verified at $_TEMP_DIR"
+				echo "Starting installation..."
+				sudo apt-get install -y "./$DEB_FILE"
+			else
+				echo "DOWNLOAD FAIL: $DEB_FILE was not found in $_TEMP_DIR after wget!"
+				exit 1
+			fi
 			popd
 		} >>"$LOG_FILE" 2>&1
 
@@ -590,6 +619,77 @@ function setup_nody_greeter() {
 	done
 }
 
+function setup_xfce_lock() {
+	print_header "XFCE Lock & Screensaver Routing"
+
+	# 1. Stop running Xfce screensaver
+	print_step "config: stop xfce4-screensaver"
+	if pgrep -f "xfce4-screensaver" >/dev/null; then
+		xfce4-screensaver-command --exit >>"$LOG_FILE" 2>&1 || true
+		print_success
+	else
+		print_skip
+	fi
+
+	# 2. Apply Xfce Lock Settings (Bridge to LightDM/dm-tool)
+	print_step "config: route lock to dm-tool"
+	if command -v xfconf-query >/dev/null 2>&1; then
+		local CURRENT_LOCK=$(xfconf-query -c xfce4-session -p /general/LockCommand 2>/dev/null || echo "")
+
+		if [ "$CURRENT_LOCK" == "dm-tool lock" ]; then
+			print_skip
+		else
+			xfconf-query -c xfce4-session -p /general/LockCommand -n -t string -s "dm-tool lock" >>"$LOG_FILE" 2>&1
+			print_success
+		fi
+	else
+		print_fail
+		print_info "xfconf-query not found. Make sure you are inside an active XFCE session."
+	fi
+
+	# 3. Force off native screensaver toggles
+	print_step "config: disable native screensaver"
+	if command -v xfconf-query >/dev/null 2>&1; then
+		xfconf-query -c xfce4-screensaver -p /saver/enabled -n -t bool -s false >>"$LOG_FILE" 2>&1 || true
+		xfconf-query -c xfce4-screensaver -p /lock/enabled -n -t bool -s false >>"$LOG_FILE" 2>&1 || true
+		print_success
+	else
+		# If xfconf-query fails, we skip gracefully to avoid breaking the script
+		print_skip
+	fi
+}
+
+function setup_touchpad() {
+	print_header "X11 Touchpad Configuration"
+	print_step "config: 30-touchpad.conf"
+
+	local _CONF_DIR="/etc/X11/xorg.conf.d"
+	local _CONF_FILE="$_CONF_DIR/30-touchpad.conf"
+
+	# Idempotency check: If the file exists and contains our specific settings, skip it.
+	if [ -f "$_CONF_FILE" ] && grep -q 'Option "Tapping" "on"' "$_CONF_FILE" && grep -q 'Option "AccelSpeed" "0.5"' "$_CONF_FILE"; then
+		print_skip
+	else
+		# 1. Ensure the directory exists (logging any output)
+		sudo mkdir -p "$_CONF_DIR" >>"$LOG_FILE" 2>&1
+
+		# 2. Write the configuration cleanly using tee
+		sudo tee "$_CONF_FILE" >/dev/null <<'EOF'
+Section "InputClass"
+    Identifier "libinput touchpad catchall"
+    MatchIsTouchpad "on"
+    Driver "libinput"
+    Option "Tapping" "on"
+    Option "AccelSpeed" "0.5"
+EndSection
+EOF
+
+		# 3. Log the successful file creation to the master log
+		echo "[$(date +'%H:%M:%S')] INFO: Wrote libinput touchpad config to $_CONF_FILE" >>"$LOG_FILE"
+		print_success
+	fi
+}
+
 # _SILENT=$PWD/silent/install.sh
 # if [ ! command -v sddm ] &>/dev/null; then
 #     echo "Installing sddm"
@@ -598,43 +698,127 @@ function setup_nody_greeter() {
 # $_SILENT
 # echo
 
-function main() {
+# ==============================================================================
+# 4. MODULE GROUPS
+# ==============================================================================
+
+function run_core() {
 	sudo apt-get update
 	echo
 	setup_pipx
 	pipx upgrade-all || true
 	echo
-
-	# 1. Core Utilities & Base Tools
 	apt_install wget2
 	apt_install unzip
+}
 
-	# 2. Fonts (High Priority)
+function run_fonts() {
 	setup_fonts
-	setup_daily_wallpaper
+}
 
-	# 3. Terminal & Shell Core
+function run_terminal() {
 	setup_kitty
 	setup_zshrc
 	setup_tmux
+	setup_bat
+}
 
-	# 4. Editors & Development Tools
+function run_dev() {
 	setup_neovim
 	setup_vsCode
 	setup_conan
+	setup_CppDev
 	setup_tldr
 	apt_install shfmt
-	apt_install inkscape
+}
 
-	# 5. System Daemons & Services
+function run_desktop() {
 	setup_tlp
+	setup_touchpad
 	setup_syncthing
 	setup_grub
-	setup_XFconf
-	apt_install gimp
-	setup_bat
-	setup_CppDev
+	setup_xfconf
 	setup_nody_greeter
+	setup_xfce_lock
+	setup_daily_wallpaper
+}
+
+function run_apps() {
+	apt_install inkscape
+	apt_install gimp
+	apt_install libreoffice
+}
+
+function run_all() {
+	run_core
+	run_fonts
+	run_terminal
+	run_dev
+	run_desktop
+	run_apps
+}
+
+# ==============================================================================
+# 5. EXECUTION ENGINE
+# ==============================================================================
+
+function show_help() {
+	echo -e "${BOLD}${BLUE}Dotfiles Setup Script${RESET}"
+	echo -e "Usage: $0 [module1] [module2] [function_name] ..."
+	echo ""
+	echo -e "${CYAN}Available Groups:${RESET}"
+	echo "  all       - Run absolutely everything (Default)"
+	echo "  core      - Update apt, install pipx, wget2, unzip"
+	echo "  fonts     - Download and install system fonts"
+	echo "  terminal  - Kitty, Zsh, Tmux, Bat"
+	echo "  dev       - Neovim, VS Code, C++ Dev tools, Conan, etc."
+	echo "  desktop   - LightDM, Grub, XFCE configs, TLP, Wallpaper"
+	echo "  apps      - GIMP, Inkscape, LibreOffice"
+	echo ""
+	echo -e "${CYAN}Specific Functions:${RESET}"
+	echo "  You can also pass the exact name of any setup function."
+	echo "  The 'setup_' prefix is optional."
+	echo ""
+	echo -e "${CYAN}Examples:${RESET}"
+	echo "  $0 fonts terminal   # Run two module groups"
+	echo "  $0 setup_neovim     # Run one specific function"
+	echo "  $0 tmux             # Smart matching: runs 'setup_tmux'"
+}
+
+function main() {
+	if [ $# -eq 0 ]; then
+		run_all
+		return
+	fi
+
+	for arg in "$@"; do
+		case $arg in
+		all) run_all ;;
+		core) run_core ;;
+		fonts) run_fonts ;;
+		terminal) run_terminal ;;
+		dev) run_dev ;;
+		desktop) run_desktop ;;
+		apps) run_apps ;;
+		help | -h | --help)
+			show_help
+			exit 0
+			;;
+		*)
+			if declare -F "$arg" >/dev/null; then
+				"$arg"
+
+			elif declare -F "setup_$arg" >/dev/null; then
+				"setup_$arg"
+
+			else
+				echo -e "${RED}[ FAIL ] Unknown module or function: $arg${RESET}"
+				echo "Run '$0 help' to see available options."
+				exit 1
+			fi
+			;;
+		esac
+	done
 }
 
 main "$@"
