@@ -85,7 +85,7 @@
           <property name="last-single-image" type="string" value="/usr/share/images/desktop-base/default"/>
         </property>
         <property name="workspace3" type="empty">
-          <property name="last-image" type="string" value="/home/sumit/Public/BingWallpapers/bing_wallpaper_2026-06-17.jpg"/>
+          <property name="last-image" type="string" value="/home/sumit/Public/BingWallpapers/bing_wallpaper_2026-09-09.jpg"/>
           <property name="backdrop-cycle-enable" type="bool" value="true"/>
           <property name="color-style" type="int" value="3"/>
           <property name="backdrop-cycle-period" type="int" value="5"/>
