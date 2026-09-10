@@ -690,6 +690,38 @@ EOF
 	fi
 }
 
+function setup_js() {
+    print_header "Node.js & JavaScript Tooling"
+
+    # 1. Install npm (this automatically pulls in nodejs as a dependency)
+    apt_install npm
+
+    # 2. Install pnpm globally using npm
+    print_step "npm: pnpm"
+    if ! command -v pnpm &>/dev/null; then
+        # Install globally via sudo, routing output to our master log
+        if sudo npm install -g pnpm >> "$LOG_FILE" 2>&1; then
+            print_success
+        else
+            print_fail
+        fi
+    else
+        print_skip
+    fi
+    
+    # 3. Optional: Install TypeScript globally (since you had it in your old commented-out code!)
+    print_step "npm: typescript"
+    if ! command -v tsc &>/dev/null; then
+        if sudo npm install -g typescript >> "$LOG_FILE" 2>&1; then
+            print_success
+        else
+            print_fail
+        fi
+    else
+        print_skip
+    fi
+}
+
 # _SILENT=$PWD/silent/install.sh
 # if [ ! command -v sddm ] &>/dev/null; then
 #     echo "Installing sddm"
@@ -730,6 +762,7 @@ function run_dev() {
 	setup_CppDev
 	setup_tldr
 	apt_install shfmt
+	setup_js
 }
 
 function run_desktop() {
