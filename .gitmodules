@@ -34,3 +34,12 @@
 [submodule "kitty/Catppuccin"]
 	path = kitty/Catppuccin
 	url = https://github.com/catppuccin/kitty.git
+[submodule "web-greeter/themes/lightdm-web-corporate-glassmorphism"]
+	path = web-greeter/themes/lightdm-web-corporate-glassmorphism
+	url = https://github.com/Awethon/lightdm-web-corporate-glassmorphism.git
+[submodule "web-greeter/themes/modern"]
+	path = web-greeter/themes/modern
+	url = https://github.com/ffwff/modern.git
+[submodule "web-greeter/themes/glorious"]
+	path = web-greeter/themes/glorious
+	url = https://github.com/eromatiya/lightdm-webkit2-theme-glorious.git

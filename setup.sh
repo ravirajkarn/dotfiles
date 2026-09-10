@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+# set -e
 
 # ==============================================================================
 # 0. SCRIPT LOCATION (fix: don't rely on caller's $PWD)
@@ -7,7 +7,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # ==============================================================================
-# 1. GLOBAL COLORS & UI HELPERS
+# 1. GLOBAL COLORS, LOGGING & UI HELPERS
 # ==============================================================================
 RESET='\e[0m'
 BOLD='\e[1m'
@@ -17,32 +17,63 @@ GREEN='\e[32m'
 YELLOW='\e[33m'
 RED='\e[31m'
 
-# Formatting helpers for aligned, minimalist output
-print_header() { echo -e "\n${BOLD}${BLUE}:: $1${RESET}"; }
-print_step() { printf "  %-45s " "$1"; }
-print_success() { printf "[ ${GREEN}DONE${RESET} ]\n"; }
-print_skip() { printf "[ ${YELLOW}SKIP${RESET} ]\n"; }
-print_fail() { printf "[ ${RED}FAIL${RESET} ]\n"; }
-print_info() { echo -e "  ${CYAN}$1${RESET}"; }
+# Initialize Log File
+LOG_FILE="$SCRIPT_DIR/setup.log"
+echo "===================================================" >"$LOG_FILE"
+echo "Dotfiles Setup Execution - $(date +'%Y-%m-%d %H:%M:%S')" >>"$LOG_FILE"
+echo "===================================================" >>"$LOG_FILE"
+
+# Dual-Output Formatting Helpers
+print_header() {
+	echo -e "\n${BOLD}${BLUE}:: $1${RESET}"
+	echo -e "\n[$(date +'%H:%M:%S')] === MODULE: $1 ===" >>"$LOG_FILE"
+}
+
+print_step() {
+	printf "  %-45s " "$1"
+	# Log the step start without a newline, so the status appends to the same line
+	printf "[%s] %-45s " "$(date +'%H:%M:%S')" "$1" >>"$LOG_FILE"
+}
+
+print_success() {
+	printf "[ ${GREEN}DONE${RESET} ]\n"
+	echo "[ DONE ]" >>"$LOG_FILE"
+}
+
+print_skip() {
+	printf "[ ${YELLOW}SKIP${RESET} ]\n"
+	echo "[ SKIP ]" >>"$LOG_FILE"
+}
+
+print_fail() {
+	printf "[ ${RED}FAIL${RESET} ]\n"
+	echo "[ FAIL ]" >>"$LOG_FILE"
+}
+
+print_info() {
+	echo -e "  ${CYAN}$1${RESET}"
+	echo "[$(date +'%H:%M:%S')] INFO: $1" >>"$LOG_FILE"
+}
 
 # ==============================================================================
 # 2. CORE FUNCTIONS
 # ==============================================================================
 
 function apt_install() {
-	local CMD_NAME="$1"
 	local PKG_NAME="${2:-$1}"
-
 	print_step "apt: $PKG_NAME"
-	if ! command -v "$CMD_NAME" &>/dev/null; then
-		if sudo apt-get install -y "$PKG_NAME" >/dev/null 2>&1; then
+
+	if dpkg -s "$PKG_NAME" &>/dev/null; then
+		print_skip
+	else
+		sudo apt-get install -y "$PKG_NAME" >>"$LOG_FILE" 2>&1
+		local apt_status=$?
+
+		if [ $apt_status -eq 0 ]; then
 			print_success
 		else
 			print_fail
-			return 1
 		fi
-	else
-		print_skip
 	fi
 }
 
@@ -236,7 +267,7 @@ function setup_tlp() {
 	done
 
 	print_step "service: tlp.service"
-	sudo systemctl enable --now tlp.service >/dev/null 2>&1
+	sudo systemctl enable --now tlp.service >>"$LOG_FILE" 2>&1
 	print_success
 }
 
@@ -282,10 +313,10 @@ function setup_XFconf() {
 	print_success
 
 	print_step "Updating path to /home/$USER"
-	find "$PWD/xfconf" -type f -exec sed -i "s|/home/[^/]*|/home/$USER|g" {} +
+	find "$SCRIPT_DIR/xfconf" -type f -exec sed -i "s|/home/[^/]*|/home/$USER|g" {} +
 	print_success
 
-	create_symlink "$PWD/xfconf" "$_XFCONF_DIR"
+	create_symlink "$SCRIPT_DIR/xfconf" "$_XFCONF_DIR"
 
 	print_step "Starting xfconfd & applying themes"
 	xfsettingsd --replace &>/dev/null &
@@ -337,15 +368,26 @@ function setup_fonts() {
 			continue
 		fi
 
+		echo "[$(date +'%H:%M:%S')] DOWNLOAD START: $url" >>"$LOG_FILE"
+		echo "[$(date +'%H:%M:%S')] DESTINATION: $_TMP_DIR/$filename" >>"$LOG_FILE"
+
 		if wget -q --show-progress --timeout=15 --tries=3 -O "$_TMP_DIR/$filename" "$url"; then
+
+			if [ -f "$_TMP_DIR/$filename" ]; then
+				echo "[$(date +'%H:%M:%S')] DOWNLOAD SUCCESS: $filename verified on disk." >>"$LOG_FILE"
+			fi
+
 			mkdir -p "$target_dir"
 			case "$filename" in
-			*.zip) unzip -q -o "$_TMP_DIR/$filename" -d "$target_dir" || true ;;
-			*.tar.gz | *.tgz) tar -xzf "$_TMP_DIR/$filename" -C "$target_dir" || true ;;
+			*.zip) unzip -q -o "$_TMP_DIR/$filename" -d "$target_dir" >>"$LOG_FILE" 2>&1 || true ;;
+			*.tar.gz | *.tgz) tar -xzf "$_TMP_DIR/$filename" -C "$target_dir" >>"$LOG_FILE" 2>&1 || true ;;
 			*) mv "$_TMP_DIR/$filename" "$target_dir/" || true ;;
 			esac
+
+			echo "[$(date +'%H:%M:%S')] EXTRACT SUCCESS: Installed to $target_dir" >>"$LOG_FILE"
 			printf "${RESTORE_CLEAR}[ ${GREEN}DONE${RESET} ]\n"
 		else
+			echo "[$(date +'%H:%M:%S')] DOWNLOAD FAIL: Wget returned an error for $url" >>"$LOG_FILE"
 			printf "${RESTORE_CLEAR}[ ${RED}FAIL${RESET} ]\n"
 		fi
 
@@ -362,7 +404,7 @@ function setup_fonts() {
 function setup_zshrc() {
 	print_header "Zsh Configuration"
 
-	create_symlink "$PWD/zshrc" "$HOME/.zshrc"
+	create_symlink "$SCRIPT_DIR/zshrc" "$HOME/.zshrc"
 }
 
 function setup_daily_wallpaper() {
@@ -409,6 +451,145 @@ function setup_daily_wallpaper() {
 	fi
 }
 
+function setup_bat() {
+	print_header "Bat (batcat)"
+
+	apt_install batcat bat
+
+	print_step "link: bat executable"
+	mkdir -p "$HOME/.local/bin"
+
+	if [ ! -L "$HOME/.local/bin/bat" ]; then
+		ln -s /usr/bin/batcat "$HOME/.local/bin/bat"
+		print_success
+	else
+		print_skip
+	fi
+}
+
+# function setup_js() {
+# 	apt_install typescript
+# 	apt_install pnpm
+# }
+
+function setup_CppDev() {
+	print_header "C++ Development Toolchain"
+
+	apt_install gcc build-essential
+	apt_install g++ g++
+	apt_install gdb
+	apt_install clang
+	apt_install clang-format
+	apt_install cmake
+	apt_install ninja ninja-build
+	apt_install meson
+}
+
+function setup_nody_greeter() {
+	print_header "Nody Greeter"
+
+	apt_install lightdm
+	apt_install gir1.2-glib-2.0
+	apt_install gir1.2-gtk-3.0
+	apt_install libgirepository1.0-dev
+	apt_install libcairo2
+	apt_install liblightdm-gobject-1-0
+
+	print_step "install: nody-greeter"
+
+	if [ ! -f "/usr/sbin/nody-greeter" ] && ! command -v nody-greeter &>/dev/null; then
+
+		local _TEMP_DIR=$(mktemp -d)
+
+		{
+			pushd "$_TEMP_DIR"
+            local LATEST_URL=$(wget -qO- https://api.github.com/repos/JezerM/nody-greeter/releases/latest | grep "browser_download_url.*debian\.deb" | cut -d '"' -f 4)
+            local DEB_FILE=$(basename "$LATEST_URL")
+
+            echo "========================================"
+            echo "DOWNLOAD START: $LATEST_URL"
+            echo "DESTINATION: $_TEMP_DIR/$DEB_FILE"
+            echo "========================================"
+
+            wget -q "$LATEST_URL"
+
+            if [ -f "$DEB_FILE" ]; then
+                echo "DOWNLOAD SUCCESS: $DEB_FILE verified at $_TEMP_DIR"
+                echo "Starting installation..."
+                sudo apt-get install -y "./$DEB_FILE"
+            else
+                echo "DOWNLOAD FAIL: $DEB_FILE was not found in $_TEMP_DIR after wget!"
+                exit 1 
+            fi
+			popd
+		} >>"$LOG_FILE" 2>&1
+
+		local build_status=$?
+
+		rm -rf "$_TEMP_DIR"
+
+		if [ $build_status -eq 0 ]; then
+			print_success
+		else
+			print_fail
+			echo -e "  ${RED}-> Installation crashed! Check ${YELLOW}$LOG_FILE${RED} for details.${RESET}"
+			exit 1
+		fi
+	else
+		print_skip
+	fi
+
+	print_step "config: lightdm.conf"
+	local _LIGHTDM_CONF="/etc/lightdm/lightdm.conf"
+
+	if [ -f "$_LIGHTDM_CONF" ]; then
+
+		if grep -q "^greeter-session=nody-greeter" "$_LIGHTDM_CONF"; then
+			print_skip
+		else
+			if grep -Eq "^#?[[:space:]]*greeter-session=" "$_LIGHTDM_CONF"; then
+				sudo sed -i 's/^#*[[:space:]]*greeter-session=.*/greeter-session=nody-greeter/' "$_LIGHTDM_CONF"
+
+			elif grep -q "^\[Seat:\*\]" "$_LIGHTDM_CONF"; then
+				sudo sed -i '/^\[Seat:\*\]/a greeter-session=nody-greeter' "$_LIGHTDM_CONF"
+
+			else
+				echo -e "\n[Seat:*]\ngreeter-session=nody-greeter" | sudo tee -a "$_LIGHTDM_CONF" >/dev/null
+			fi
+			print_success
+		fi
+	else
+		print_fail
+		echo -e "  ${CYAN}-> $_LIGHTDM_CONF not found! Is LightDM installed?${RESET}"
+	fi
+
+	local MY_CONF="$SCRIPT_DIR/web-greeter/themes"
+	local WEB_GREETER_THEMES="/usr/share/web-greeter/themes"
+
+	sudo mkdir -p "$WEB_GREETER_THEMES"
+
+	for theme_dir in "$MY_CONF"/*; do
+
+		if [ -e "$theme_dir" ]; then
+			local theme_name=$(basename "$theme_dir")
+			local target="$WEB_GREETER_THEMES/$theme_name"
+
+			print_step "link (sudo): $theme_name"
+
+			if [ -e "$target" ] && [ ! -L "$target" ]; then
+				sudo mv "$target" "${target}.bak"
+				sudo ln -sf "$theme_dir" "$target"
+				print_success
+			elif [ -L "$target" ] && [ "$(readlink "$target")" = "$theme_dir" ]; then
+				print_skip
+			else
+				sudo ln -sf "$theme_dir" "$target"
+				print_success
+			fi
+		fi
+	done
+}
+
 # _SILENT=$PWD/silent/install.sh
 # if [ ! command -v sddm ] &>/dev/null; then
 #     echo "Installing sddm"
@@ -450,7 +631,10 @@ function main() {
 	setup_syncthing
 	setup_grub
 	setup_XFconf
-
+	apt_install gimp
+	setup_bat
+	setup_CppDev
+	setup_nody_greeter
 }
 
 main "$@"
