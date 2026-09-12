@@ -59,6 +59,38 @@ print_info() {
 # 2. CORE FUNCTIONS
 # ==============================================================================
 
+function check_sudo() {
+	print_header "System Verification"
+
+	# 1. Prevent running the script completely as root
+	print_step "Checking execution context"
+	if [ "$EUID" -eq 0 ]; then
+		print_fail
+		echo -e "  ${RED}-> FATAL: Do not run this script as root (e.g., sudo ./setup.sh).${RESET}"
+		echo -e "  ${CYAN}-> Run it as your normal user. The script will ask for your password safely.${RESET}"
+		exit 1
+	fi
+	print_success
+
+	# 2. Ask for the password upfront and validate sudo access
+	print_step "Verifying sudo privileges"
+	# 'sudo -v' asks for the password and caches the credential
+	if sudo -v >/dev/null 2>&1; then
+		print_success
+	else
+		print_fail
+		echo -e "  ${RED}-> FATAL: You need sudo privileges to run this script.${RESET}"
+		exit 1
+	fi
+
+	# 3. Background keep-alive loop
+	(while true; do
+		sudo -n true
+		sleep 60
+		kill -0 "$$" || exit
+	done 2>/dev/null) &
+}
+
 function apt_install() {
 	local PKG_NAME="${2:-$1}"
 	print_step "apt: $PKG_NAME"
@@ -153,20 +185,45 @@ function setup_conan() {
 
 function setup_grub() {
 	print_header "GRUB Bootloader"
-	local _GRUB="/usr/share/grub/themes/Elegant-forest-window-right-dark"
-	local _SOURCE="$SCRIPT_DIR/Elegant-forest-window-right-dark"
+	local GRUB_THEMES_DIR="/usr/share/grub/themes"
+	local MY_GRUB_THEMES="$SCRIPT_DIR/grub"
 
-	print_step "link: GRUB Theme"
-	if [ -L "$_GRUB" ] && [ "$(readlink "$_GRUB")" = "$_SOURCE" ]; then
-		print_skip
-	else
-		sudo rm -rf "$_GRUB"
-		sudo ln -s "$_SOURCE" "$_GRUB"
-		print_success
-	fi
+	for theme_dir in "$MY_GRUB_THEMES"/*; do
+
+		if [ -e "$theme_dir" ]; then
+			# Safely create a NEW variable for the basename
+			local theme_name=$(basename "$theme_dir")
+
+			case "$theme_name" in
+			Elegant-grub2-themes | some_other_theme | test_theme)
+				continue
+				;;
+			esac
+
+			local target="$GRUB_THEMES_DIR/$theme_name"
+
+			print_step "link (sudo): $theme_name"
+
+			if [ -e "$target" ] && [ ! -L "$target" ]; then
+				sudo mv "$target" "${target}.bak"
+				# Link using the absolute path ($theme_dir)
+				sudo ln -sf "$theme_dir" "$target"
+				print_success
+			elif [ -L "$target" ] && [ "$(readlink "$target")" = "$theme_dir" ]; then
+				print_skip
+			else
+				# Link using the absolute path ($theme_dir)
+				sudo ln -sf "$theme_dir" "$target"
+				print_success
+			fi
+		fi
+	done
+
+	sudo mkdir -p "/usr/share/grub/themes/custom_theme"
+	sudo chown $USER:$USER "/usr/share/grub/themes/custom_theme/background.jpg" >> $LOG_FILE
 
 	print_step "Updating GRUB configuration"
-	sudo update-grub >/dev/null 2>&1
+	sudo update-grub >>"$LOG_FILE" 2>&1
 	print_success
 }
 
@@ -444,6 +501,9 @@ function setup_daily_wallpaper() {
 	sudo mkdir -p /usr/share/backgrounds/bing-daily
 	sudo chown $USER:$USER /usr/share/backgrounds/bing-daily
 
+	sudo mkdir -p "/usr/share/grub/themes/custom_theme"
+	sudo chown $USER:$USER "/usr/share/grub/themes/custom_theme"
+
 	local REPO_DIR="$HOME/Public/Daily_Wallpaper"
 	local SCRIPT_PATH="$REPO_DIR/daily_wallpaper.sh"
 	local CRON_SCHEDULE="0 0 * * *"
@@ -601,6 +661,11 @@ function setup_nody_greeter() {
 
 		if [ -e "$theme_dir" ]; then
 			local theme_name=$(basename "$theme_dir")
+			case "$theme_name" in
+			litarvan | some_other_theme | test_theme)
+				continue
+				;;
+			esac
 			local target="$WEB_GREETER_THEMES/$theme_name"
 
 			print_step "link (sudo): $theme_name"
@@ -691,35 +756,77 @@ EOF
 }
 
 function setup_js() {
-    print_header "Node.js & JavaScript Tooling"
+	print_header "Node.js & JavaScript Tooling"
 
-    # 1. Install npm (this automatically pulls in nodejs as a dependency)
-    apt_install npm
+	# 1. Install npm (this automatically pulls in nodejs as a dependency)
+	apt_install npm
 
-    # 2. Install pnpm globally using npm
-    print_step "npm: pnpm"
-    if ! command -v pnpm &>/dev/null; then
-        # Install globally via sudo, routing output to our master log
-        if sudo npm install -g pnpm >> "$LOG_FILE" 2>&1; then
-            print_success
-        else
-            print_fail
-        fi
-    else
-        print_skip
-    fi
-    
-    # 3. Optional: Install TypeScript globally (since you had it in your old commented-out code!)
-    print_step "npm: typescript"
-    if ! command -v tsc &>/dev/null; then
-        if sudo npm install -g typescript >> "$LOG_FILE" 2>&1; then
-            print_success
-        else
-            print_fail
-        fi
-    else
-        print_skip
-    fi
+	# 2. Install pnpm globally using npm
+	print_step "npm: pnpm"
+	if ! command -v pnpm &>/dev/null; then
+		# Install globally via sudo, routing output to our master log
+		if sudo npm install -g pnpm >>"$LOG_FILE" 2>&1; then
+			print_success
+		else
+			print_fail
+		fi
+	else
+		print_skip
+	fi
+
+	# 3. Optional: Install TypeScript globally (since you had it in your old commented-out code!)
+	print_step "npm: typescript"
+	if ! command -v tsc &>/dev/null; then
+		if sudo npm install -g typescript >>"$LOG_FILE" 2>&1; then
+			print_success
+		else
+			print_fail
+		fi
+	else
+		print_skip
+	fi
+}
+
+function setup_webkit_theme_litarvan() {
+	print_header "Litarvan Web Greeter Theme"
+	print_step "build & install: litarvan"
+
+	local THEME_DIR="$SCRIPT_DIR/web-greeter/themes/litarvan"
+	local TARGET_DIR="/usr/share/web-greeter/themes/litarvan"
+
+	# Idempotency check: Skip if it's already installed
+	if [ -f "$TARGET_DIR/index.theme" ]; then
+		print_skip
+	else
+		if [ -d "$THEME_DIR" ]; then
+
+			{
+				# 1. Moveing into the directory to build
+				pushd "$THEME_DIR"
+				bash ./build.sh
+
+				# 2. Creating target system directory
+				sudo mkdir -p "$TARGET_DIR"
+
+				# 3. Extract the tarball.
+				sudo tar -xf lightdm-webkit-theme-litarvan-*.tar.gz -C "$TARGET_DIR" --strip-components=1
+
+				popd
+			} >>"$LOG_FILE" 2>&1
+
+			local build_status=$?
+
+			if [ $build_status -eq 0 ]; then
+				print_success
+			else
+				print_fail
+				echo -e "  ${RED}-> Litarvan build failed! Check ${YELLOW}$LOG_FILE${RED} for details.${RESET}"
+			fi
+		else
+			print_fail
+			print_info "Theme directory not found: $THEME_DIR"
+		fi
+	fi
 }
 
 # _SILENT=$PWD/silent/install.sh
@@ -772,6 +879,7 @@ function run_desktop() {
 	setup_grub
 	setup_xfconf
 	setup_nody_greeter
+	setup_webkit_theme_litarvan
 	setup_xfce_lock
 	setup_daily_wallpaper
 }
@@ -780,6 +888,7 @@ function run_apps() {
 	apt_install inkscape
 	apt_install gimp
 	apt_install libreoffice
+	apt_install okular
 }
 
 function run_all() {
@@ -819,6 +928,8 @@ function show_help() {
 }
 
 function main() {
+	check_sudo
+
 	if [ $# -eq 0 ]; then
 		run_all
 		return
