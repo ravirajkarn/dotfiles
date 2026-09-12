@@ -1,0 +1,123 @@
+
+## Installation:
+
+Usage:  `./install.sh [OPTIONS...]`
+
+```
+  -t, --theme     Background theme variant(s) [forest|mojave|mountain|wave] (default is forest)
+  -p, --type      Theme style variant(s)      [window|float|sharp|blur] (default is window)
+  -i, --side      Picture display side        [left|right] (default is left)
+  -c, --color     Background color variant(s) [dark|light] (default is dark)
+  -s, --screen    Screen display variant(s)   [1080p|2k|4k] (default is 1080p)
+  -l, --logo      Show a logo on picture      [default|system] (default: a mountain logo)
+  -r, --remove    Remove/Uninstall theme      (must add theme options, default is Elegant-forest-window-left-dark)
+  -b, --boot      Install theme into '/boot/grub' or '/boot/grub2'
+  -h, --help      Show this help
+```
+
+_If no options are used, a user interface `dialog` will show up instead_
+
+### Examples:
+ - Install mountain theme on 2k display device:
+
+```sh
+sudo ./install.sh -t mountain -s 2k
+```
+
+ - Install wave theme into /boot/grub/themes:
+
+```sh
+sudo ./install.sh -b -t wave
+```
+
+ - Uninstall mountain theme:
+
+```sh
+sudo ./install.sh -r -t mountain
+```
+
+## Installation with NixOS:
+To use this theme with NixOS you will have to enable [flakes](https://wiki.nixos.org/wiki/flakes). Before you do this, please inform yourself if you really want to, because flakes are still an unstable feature.
+First you will have to add grub2 to your `flake.nix` file as a new input.
+```nix
+# flake.nix
+{
+  description = "NixOS configuration";
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    # Add elegant grub2 themes to your inputs ...
+    elegant-grub2-themes = {
+      url = "github:vinceliuice/elegant-grub2-themes";
+    };
+  };
+  outputs = inputs@{ nixpkgs,  elegant-grub2-themes, ... }: {
+    nixosConfigurations = {
+      my_host = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
+        # ... and then to your modules
+        modules = [
+          ./configuration.nix
+          elegant-grub2-themes.nixosModules.default
+        ];
+      };
+    };
+  };
+}
+```
+After that, you can configure the theme as shown below. In this example it is inside the `configuration.nix` file but it can be any file you choose.
+```nix
+# configuration.nix
+{ inputs, config, pkgs, lib, ... }:
+{
+  boot.loader.grub = { ... };
+  boot.loader.elegant-grub2-theme = {
+    enable = true;
+    theme = "mojave";
+    type = "blur";
+    side = "right";
+    color = "dark";
+    screen = "1080p";
+    logo = "system";
+  };
+}
+```
+
+## Issues / tweaks:
+
+### Correcting display resolution:
+
+ - On the grub screen, press `c` to enter the command line
+ - Enter `vbeinfo` or `videoinfo` to check available resolutions
+ - Open `/etc/default/grub`, and edit `GRUB_GFXMODE=[height]x[width]x32` to match your resolution
+ - Finally, run `grub-mkconfig -o /boot/grub/grub.cfg` to update your grub config
+
+### Setting a custom background:
+
+ - Make sure you have `imagemagick` installed, or at least something that provides `convert`
+ - Find the resolution of your display, and make sure your background matches the resolution
+   - 1920x1080 >> 1080p
+   - 2560x1440 >> 2k
+   - 3840x2160 >> 4k
+ - Place your custom background inside the root of the project, and name it `background.jpg`
+ - Run the installer like normal, but with -s `[YOUR_RESOLUTION]` and -t `[THEME]` and -i `[ICON]`
+   - Make sure to replace `[YOUR_RESOLUTION]` with your resolution and `[THEME]` with the theme
+
+## Contributing:
+ - If you made changes to icons, or added a new one:
+   - Delete the existing icon, if there is one
+   - Run `cd assets; ./render-all.sh`
+ - Create a pull request from your branch or fork
+ - If any issues occur, report then to the [issue](issues) page
+
+## Preview:
+![preview-01](preview-01.jpg?raw=true)
+![preview-02](preview-02.jpg?raw=true)
+![preview-03](preview-03.jpg?raw=true)
+![preview-04](preview-04.jpg?raw=true)
+
+## Documents
+
+[Grub2 theme reference](https://wiki.rosalab.ru/en/index.php/Grub2_theme_/_reference)
+
+[Grub2 theme tutorial](https://wiki.rosalab.ru/en/index.php/Grub2_theme_tutorial)
