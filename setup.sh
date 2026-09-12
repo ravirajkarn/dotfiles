@@ -184,47 +184,101 @@ function setup_conan() {
 }
 
 function setup_grub() {
-	print_header "GRUB Bootloader"
-	local GRUB_THEMES_DIR="/usr/share/grub/themes"
-	local MY_GRUB_THEMES="$SCRIPT_DIR/grub"
+    print_header "GRUB Bootloader (Frosted Glass Dynamic Theme)"
+    
+    # Ensure ImageMagick is installed for the generator script
+    apt_install imagemagick
 
-	for theme_dir in "$MY_GRUB_THEMES"/*; do
+    local GRUB_THEMES_DIR="/usr/share/grub/themes/custom_theme"
+    local MY_GRUB_THEMES="$SCRIPT_DIR/grub/custom_theme"
 
-		if [ -e "$theme_dir" ]; then
-			# Safely create a NEW variable for the basename
-			local theme_name=$(basename "$theme_dir")
+    # 1. Ensure directory exists and copy files
+    print_step "install: custom_theme files"
+    sudo mkdir -p "$GRUB_THEMES_DIR"
+    sudo cp -r "$MY_GRUB_THEMES"/* "$GRUB_THEMES_DIR/" >> "$LOG_FILE" 2>&1
+    
+    local SCRIPT="$GRUB_THEMES_DIR/gen-grub-bg.sh"
+    sudo chmod +x "$SCRIPT"
+    
+    sudo touch "$GRUB_THEMES_DIR/background_original.jpg"
+    sudo chown $USER:$USER "$GRUB_THEMES_DIR/background_original.jpg" >> "$LOG_FILE" 2>&1
+    print_success
 
-			case "$theme_name" in
-			Elegant-grub2-themes | some_other_theme | test_theme)
-				continue
-				;;
-			esac
+    # --- IDEMPOTENCY ENGINE FOR SYSTEMD ---
+    # We use this flag so we only restart systemd if a file actually changed
+    local _RELOAD_SYSTEMD=0
 
-			local target="$GRUB_THEMES_DIR/$theme_name"
+    # 2. Check/Write Systemd Path Unit
+    print_step "systemd: grub-bg-generator.path"
+    local CONF_FILE="/etc/systemd/system/grub-bg-generator.path"
+    local TMP_PATH=$(mktemp)
+    
+    cat <<EOF > "$TMP_PATH"
+[Unit]
+Description=Monitor GRUB background original for changes
 
-			print_step "link (sudo): $theme_name"
+[Path]
+PathModified=$GRUB_THEMES_DIR/background_original.jpg
 
-			if [ -e "$target" ] && [ ! -L "$target" ]; then
-				sudo mv "$target" "${target}.bak"
-				# Link using the absolute path ($theme_dir)
-				sudo ln -sf "$theme_dir" "$target"
-				print_success
-			elif [ -L "$target" ] && [ "$(readlink "$target")" = "$theme_dir" ]; then
-				print_skip
-			else
-				# Link using the absolute path ($theme_dir)
-				sudo ln -sf "$theme_dir" "$target"
-				print_success
-			fi
-		fi
-	done
+[Install]
+WantedBy=multi-user.target
+EOF
 
-	sudo mkdir -p "/usr/share/grub/themes/custom_theme"
-	sudo chown $USER:$USER "/usr/share/grub/themes/custom_theme/background.jpg" >> $LOG_FILE
+    # Check if the file exists AND its contents exactly match our temp file
+    if [ -f "$CONF_FILE" ] && cmp -s "$CONF_FILE" "$TMP_PATH"; then
+        print_skip
+        rm -f "$TMP_PATH"
+    else
+        sudo mv "$TMP_PATH" "$CONF_FILE"
+        sudo chmod 644 "$CONF_FILE"
+        _RELOAD_SYSTEMD=1
+        print_success
+    fi
 
-	print_step "Updating GRUB configuration"
-	sudo update-grub >>"$LOG_FILE" 2>&1
-	print_success
+    # 3. Check/Write Systemd Service Unit
+    print_step "systemd: grub-bg-generator.service"
+    local GRUB_SERVICE="/etc/systemd/system/grub-bg-generator.service"
+    local TMP_SERVICE=$(mktemp)
+    
+    cat <<EOF > "$TMP_SERVICE"
+[Unit]
+Description=Generate Frosted Glass GRUB Background
+
+[Service]
+Type=oneshot
+ExecStart=$SCRIPT
+EOF
+
+    if [ -f "$GRUB_SERVICE" ] && cmp -s "$GRUB_SERVICE" "$TMP_SERVICE"; then
+        print_skip
+        rm -f "$TMP_SERVICE"
+    else
+        sudo mv "$TMP_SERVICE" "$GRUB_SERVICE"
+        sudo chmod 644 "$GRUB_SERVICE"
+        _RELOAD_SYSTEMD=1
+        print_success
+    fi
+
+    # 4. Enable and start the monitor smartly
+    print_step "enable: grub-bg-generator.path"
+    if [ "$_RELOAD_SYSTEMD" -eq 1 ]; then
+        # Files changed, so we must reload the daemon
+        sudo systemctl daemon-reload >> "$LOG_FILE" 2>&1
+        sudo systemctl enable --now grub-bg-generator.path >> "$LOG_FILE" 2>&1
+        print_success
+    elif ! systemctl is-active --quiet grub-bg-generator.path; then
+        # Files didn't change, but the service isn't running, so start it
+        sudo systemctl enable --now grub-bg-generator.path >> "$LOG_FILE" 2>&1
+        print_success
+    else
+        # Files are exactly the same AND it's already running perfectly
+        print_skip
+    fi
+
+    # 5. Update GRUB
+    print_step "Updating GRUB configuration"
+    sudo update-grub >> "$LOG_FILE" 2>&1
+    print_success
 }
 
 function setup_kitty() {
@@ -885,7 +939,7 @@ function run_desktop() {
 }
 
 function run_apps() {
-	apt_install inkscape
+	apt_install inkscapepdating GRUB configuration
 	apt_install gimp
 	apt_install libreoffice
 	apt_install okular
