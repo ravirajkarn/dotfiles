@@ -943,6 +943,8 @@ function run_apps() {
 	apt_install gimp
 	apt_install libreoffice
 	apt_install okular
+	apt_install obsidian
+	
 }
 
 function run_all() {
