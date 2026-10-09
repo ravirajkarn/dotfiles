@@ -939,7 +939,7 @@ function run_desktop() {
 }
 
 function run_apps() {
-	apt_install inkscapepdating GRUB configuration
+	apt_install inkscape
 	apt_install gimp
 	apt_install libreoffice
 	apt_install okular

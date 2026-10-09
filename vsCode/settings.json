@@ -10,7 +10,7 @@
   "workbench.settings.applyToAllProfiles": ["C_Cpp.autocomplete"],
   "workbench.editor.enablePreview": false,
   "workbench.colorTheme": "Catppuccin Macchiato",
-  "workbench.iconTheme": "material-icon-theme",
+  "workbench.iconTheme": "vscode-icons",
   "workbench.secondarySideBar.defaultVisibility": "hidden",
   "workbench.colorCustomizations": {
     "[Vira*]": {
@@ -67,6 +67,8 @@
       "statusBarItem.remoteHoverForeground": "#000000",
     },
   },
+  "emmet.showSuggestionsAsSnippets": true,
+  "editor.snippetSuggestions": "bottom",
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
   // TERMINAL SETTING
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,13 +100,8 @@
   },
   "terminal.integrated.defaultProfile.linux": "tmux",
   "terminal.integrated.cursorStyleInactive": "underline",
-  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
-  //CPP CONFIG
-  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
-  "C_Cpp.default.compilerPath": "/usr/lib/llvm-19/bin/",
   "C_Cpp.clang_format_fallbackStyle": "Google",
   "C_Cpp.clang_format_style": "Google",
-  "C_Cpp.default.intelliSenseMode": "linux-clang-x64",
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
   "C_Cpp.vcFormat.indent.accessSpecifiers": true,
   "C_Cpp.vcFormat.indent.braces": true,
@@ -275,8 +272,6 @@
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
-  "gitlens.ai.model": "vscode",
-  "gitlens.ai.vscode.model": "copilot:gpt-4.1",
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
@@ -288,5 +283,8 @@
   },
   "explorer.confirmPasteNative": false,
   "debug.onTaskErrors": "abort",
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
 
 }
