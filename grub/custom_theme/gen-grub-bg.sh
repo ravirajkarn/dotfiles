@@ -30,6 +30,11 @@ else
       "$BOARD" -composite \
       "$OUTPUT"
 fi
+
+if [ ! -s "$INPUT_BG" ]; then
+    echo "Error: $INPUT_BG not found or is empty. Exiting."
+    exit 1
+fi
   
 echo "$OUTPUT updated successfully."
 update-grub

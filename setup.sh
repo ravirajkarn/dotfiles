@@ -184,36 +184,36 @@ function setup_conan() {
 }
 
 function setup_grub() {
-    print_header "GRUB Bootloader (Frosted Glass Dynamic Theme)"
-    
-    # Ensure ImageMagick is installed for the generator script
-    apt_install imagemagick
+	print_header "GRUB Bootloader (Frosted Glass Dynamic Theme)"
 
-    local GRUB_THEMES_DIR="/usr/share/grub/themes/custom_theme"
-    local MY_GRUB_THEMES="$SCRIPT_DIR/grub/custom_theme"
+	# Ensure ImageMagick is installed for the generator script
+	apt_install imagemagick
 
-    # 1. Ensure directory exists and copy files
-    print_step "install: custom_theme files"
-    sudo mkdir -p "$GRUB_THEMES_DIR"
-    sudo cp -r "$MY_GRUB_THEMES"/* "$GRUB_THEMES_DIR/" >> "$LOG_FILE" 2>&1
-    
-    local SCRIPT="$GRUB_THEMES_DIR/gen-grub-bg.sh"
-    sudo chmod +x "$SCRIPT"
-    
-    sudo touch "$GRUB_THEMES_DIR/background_original.jpg"
-    sudo chown $USER:$USER "$GRUB_THEMES_DIR/background_original.jpg" >> "$LOG_FILE" 2>&1
-    print_success
+	local GRUB_THEMES_DIR="/usr/share/grub/themes/custom_theme"
+	local MY_GRUB_THEMES="$SCRIPT_DIR/grub/custom_theme"
 
-    # --- IDEMPOTENCY ENGINE FOR SYSTEMD ---
-    # We use this flag so we only restart systemd if a file actually changed
-    local _RELOAD_SYSTEMD=0
+	print_step "install: custom_theme files"
+	sudo mkdir -p "$GRUB_THEMES_DIR"
+	sudo cp -r "$MY_GRUB_THEMES"/* "$GRUB_THEMES_DIR/" >>"$LOG_FILE" 2>&1
 
-    # 2. Check/Write Systemd Path Unit
-    print_step "systemd: grub-bg-generator.path"
-    local CONF_FILE="/etc/systemd/system/grub-bg-generator.path"
-    local TMP_PATH=$(mktemp)
-    
-    cat <<EOF > "$TMP_PATH"
+	local SCRIPT="$GRUB_THEMES_DIR/gen-grub-bg.sh"
+	sudo chmod +x "$SCRIPT"
+
+	if [ ! -s "$GRUB_THEMES_DIR/background_original.jpg" ]; then
+		sudo magick -size 1920x1080 canvas:black "$GRUB_THEMES_DIR/background_original.jpg" >>"$LOG_FILE" 2>&1
+	fi
+	sudo chown $USER:$USER "$GRUB_THEMES_DIR/background_original.jpg" >>"$LOG_FILE" 2>&1
+	print_success
+
+	# --- IDEMPOTENCY ENGINE ---
+	local _RELOAD_SYSTEMD=0
+
+	# 2. Check/Write Systemd Path Unit
+	print_step "systemd: grub-bg-generator.path"
+	local CONF_FILE="/etc/systemd/system/grub-bg-generator.path"
+	local TMP_PATH=$(mktemp)
+
+	cat <<EOF >"$TMP_PATH"
 [Unit]
 Description=Monitor GRUB background original for changes
 
@@ -224,23 +224,23 @@ PathModified=$GRUB_THEMES_DIR/background_original.jpg
 WantedBy=multi-user.target
 EOF
 
-    # Check if the file exists AND its contents exactly match our temp file
-    if [ -f "$CONF_FILE" ] && cmp -s "$CONF_FILE" "$TMP_PATH"; then
-        print_skip
-        rm -f "$TMP_PATH"
-    else
-        sudo mv "$TMP_PATH" "$CONF_FILE"
-        sudo chmod 644 "$CONF_FILE"
-        _RELOAD_SYSTEMD=1
-        print_success
-    fi
+	# Check if the file exists AND its contents exactly match our temp file
+	if [ -f "$CONF_FILE" ] && cmp -s "$CONF_FILE" "$TMP_PATH"; then
+		print_skip
+		rm -f "$TMP_PATH"
+	else
+		sudo mv "$TMP_PATH" "$CONF_FILE"
+		sudo chmod 644 "$CONF_FILE"
+		_RELOAD_SYSTEMD=1
+		print_success
+	fi
 
-    # 3. Check/Write Systemd Service Unit
-    print_step "systemd: grub-bg-generator.service"
-    local GRUB_SERVICE="/etc/systemd/system/grub-bg-generator.service"
-    local TMP_SERVICE=$(mktemp)
-    
-    cat <<EOF > "$TMP_SERVICE"
+	# 3. Check/Write Systemd Service Unit
+	print_step "systemd: grub-bg-generator.service"
+	local GRUB_SERVICE="/etc/systemd/system/grub-bg-generator.service"
+	local TMP_SERVICE=$(mktemp)
+
+	cat <<EOF >"$TMP_SERVICE"
 [Unit]
 Description=Generate Frosted Glass GRUB Background
 
@@ -249,36 +249,38 @@ Type=oneshot
 ExecStart=$SCRIPT
 EOF
 
-    if [ -f "$GRUB_SERVICE" ] && cmp -s "$GRUB_SERVICE" "$TMP_SERVICE"; then
-        print_skip
-        rm -f "$TMP_SERVICE"
-    else
-        sudo mv "$TMP_SERVICE" "$GRUB_SERVICE"
-        sudo chmod 644 "$GRUB_SERVICE"
-        _RELOAD_SYSTEMD=1
-        print_success
-    fi
+	if [ -f "$GRUB_SERVICE" ] && cmp -s "$GRUB_SERVICE" "$TMP_SERVICE"; then
+		print_skip
+		rm -f "$TMP_SERVICE"
+	else
+		sudo mv "$TMP_SERVICE" "$GRUB_SERVICE"
+		sudo chmod 644 "$GRUB_SERVICE"
+		_RELOAD_SYSTEMD=1
+		print_success
+	fi
 
-    # 4. Enable and start the monitor smartly
-    print_step "enable: grub-bg-generator.path"
-    if [ "$_RELOAD_SYSTEMD" -eq 1 ]; then
-        # Files changed, so we must reload the daemon
-        sudo systemctl daemon-reload >> "$LOG_FILE" 2>&1
-        sudo systemctl enable --now grub-bg-generator.path >> "$LOG_FILE" 2>&1
-        print_success
-    elif ! systemctl is-active --quiet grub-bg-generator.path; then
-        # Files didn't change, but the service isn't running, so start it
-        sudo systemctl enable --now grub-bg-generator.path >> "$LOG_FILE" 2>&1
-        print_success
-    else
-        # Files are exactly the same AND it's already running perfectly
-        print_skip
-    fi
+	# 4. Enable and start the monitor smartly
+	print_step "enable: grub-bg-generator.path"
+	if [ "$_RELOAD_SYSTEMD" -eq 1 ]; then
+		sudo systemctl daemon-reload >>"$LOG_FILE" 2>&1
+		sudo systemctl enable --now grub-bg-generator.path >>"$LOG_FILE" 2>&1
+		print_success
+	elif ! systemctl is-active --quiet grub-bg-generator.path; then
+		sudo systemctl enable --now grub-bg-generator.path >>"$LOG_FILE" 2>&1
+		print_success
+	else
+		print_skip
+	fi
 
-    # 5. Update GRUB
-    print_step "Updating GRUB configuration"
-    sudo update-grub >> "$LOG_FILE" 2>&1
-    print_success
+	# 5. Generate initial background and update GRUB safely
+	print_step "Generating theme & updating GRUB"
+	if sudo systemctl start grub-bg-generator.service >>"$LOG_FILE" 2>&1; then
+		print_success
+	else
+		print_fail
+		echo -e "  ${RED}-> FATAL: Background generation or update-grub failed! Check ${YELLOW}$LOG_FILE${RESET}"
+		exit 1
+	fi
 }
 
 function setup_kitty() {
@@ -944,7 +946,7 @@ function run_apps() {
 	apt_install libreoffice
 	apt_install okular
 	apt_install obsidian
-	
+
 }
 
 function run_all() {
