@@ -278,3 +278,6 @@ fi
 # [[ -f ~/.bash_competion]]
 # : undercover && source ~/.config/zshrc-undercover
 
+
+# Vite+ bin (https://viteplus.dev)
+. "/home/sumit/.config/vite-plus/env"

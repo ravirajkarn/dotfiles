@@ -9,7 +9,7 @@
   "editor.colorDecorators": true,
   "workbench.settings.applyToAllProfiles": ["C_Cpp.autocomplete"],
   "workbench.editor.enablePreview": false,
-  "workbench.colorTheme": "Catppuccin Macchiato",
+  "workbench.colorTheme": "Ayu Mirage",
   "workbench.iconTheme": "vscode-icons",
   "workbench.secondarySideBar.defaultVisibility": "hidden",
   "workbench.colorCustomizations": {
@@ -68,7 +68,7 @@
     },
   },
   "emmet.showSuggestionsAsSnippets": true,
-  "editor.snippetSuggestions": "bottom",
+  "editor.formatOnSave": true,
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
   // TERMINAL SETTING
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,15 +111,7 @@
   // MY GRAMMER
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
   "cSpell.ignoreWords": ["zoro"],
-  "cSpell.userWords": [
-    "Makefiles",
-    "gtest",
-    "Karn",
-    "Ravi",
-    "Ravirajkarn",
-    "Sumit",
-    "Kumar",
-  ],
+  "cSpell.userWords": ["Makefiles", "gtest", "Karn", "Ravi", "Ravirajkarn", "Sumit", "Kumar"],
   "cSpell.customDictionaries": {
     "custom-dictionary-user": {
       "name": "custom-dictionary-user",
@@ -226,25 +218,75 @@
   // TailwindCSS
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
   "[css]": {
-      "editor.suggest.insertMode": "replace",
-      "cSpell.fixSpellingWithRenameProvider": false,
-      "editor.quickSuggestions": {
-          "other": "on",
-          "comments": "off",
-          "strings": "on"
-      },
+    "editor.suggest.insertMode": "replace",
+    "cSpell.fixSpellingWithRenameProvider": false,
+    "editor.quickSuggestions": {
+      "other": "on",
+      "comments": "off",
+      "strings": "on",
+    },
   },
   "files.associations": {
     "*.css": "tailwindcss",
-    "zshrc": "bibtex"
+    "zshrc": "bibtex",
   },
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
   // Shellscript
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
   "[shellscript]": {
     "editor.defaultFormatter": "mkhl.shfmt",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
   },
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Python
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+  },
+
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  // JSON
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  "[json]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.formatOnSave": true,
+  },
+
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  // WebDev
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  // HTML
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features",
+    "editor.formatOnSave": true,
+  },
+
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  // TypeScript
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  "[typescript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.formatOnSave": true,
+  },
+
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  // TypeScriptReact
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.formatOnSave": true,
+  },
+
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  // JavaScript
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  "[javascript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.formatOnSave": true,
+  },
+  //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  // End WebDev
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
   // Miscellaneous
   //? ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -256,35 +298,17 @@
   "viraTheme.accent": "Teal",
   "vsicons.dontShowNewVersionMessage": true,
   "vim.useSystemClipboard": true,
-  "editor.formatOnSave": true,
   "gitlens.graph.minimap.enabled": false,
-  "github.copilot.nextEditSuggestions.enabled": false,
+  "github.copilot.nextEditSuggestions.enabled": true,
   "update.mode": "manual",
   "geminicodeassist.project": "galvanized-backbone-vzftk",
   "geminicodeassist.inlineSuggestions.enableAuto": true,
   "diffEditor.codeLens": true,
-  "github.copilot.enable": {
-    "*": false,
-    "plaintext": false,
-    "markdown": false,
-    "scminput": false,
-  },
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-  },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter"
-  },
   "explorer.confirmPasteNative": false,
   "debug.onTaskErrors": "abort",
-  "[html]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "js/ts.updateImportsOnFileMove.enabled": "always",
+  "github.copilot.enable": {
+    "typescript": true,
   },
-
+  "network.meteredConnection": "off",
 }
