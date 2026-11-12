@@ -8,6 +8,7 @@ local M      = {}
 ---@type string[]
 M.commands   = {
     "systemctl --user start hyprpolkitagent",
+    "hyprpaper"
     -- apps and apps.terminal or "kitty",
     -- "nm-applet",
     -- "waybar & hyprpaper",
