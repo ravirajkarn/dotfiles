@@ -1,20 +1,23 @@
 -- See https://wiki.hypr.land/configuring/core/autostart/
 local logger = SafeRequire("lua.utils.logger")
-local apps   = SafeRequire("lua.core.apps")
+local display = SafeRequire("lua.hardware.display")
+-- local apps   = SafeRequire("lua.core.apps")
 
 local M      = {}
 
--- Open/Closed Principle: Add or remove startup commands here without modifying apply()
+-- logger.trace()
+
 ---@type string[]
 M.commands   = {
     "systemctl --user start hyprpolkitagent",
-    "hyprpaper"
+    "hyprpaper",
+    "hyprpm reload -n && hyprctl reload",
+    string.format("gBar bar %s", display.monitors[1].output),
     -- apps and apps.terminal or "kitty",
     -- "nm-applet",
     -- "waybar & hyprpaper",
 }
 
----Single Responsibility: Validates a single command string
 ---@param cmd string
 ---@param index integer
 ---@return boolean
@@ -26,7 +29,6 @@ local function is_valid_command(cmd, index)
     return true
 end
 
----Single Responsibility: Registers valid startup commands on the hyprland.start event
 ---@return boolean success
 function M.apply()
     if #M.commands == 0 then

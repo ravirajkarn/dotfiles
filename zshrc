@@ -6,7 +6,7 @@ export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
 setopt autocd              # change directory just by typing its name
-#setopt correct            # auto correct mistakes
+setopt correct             # auto correct mistakes
 setopt interactivecomments # allow comments in interactive mode
 setopt magicequalsubst     # enable filename expansion for arguments of the form ‘anything=expression’
 setopt nonomatch           # hide error message if there is no match for the pattern
@@ -280,4 +280,8 @@ fi
 
 
 # Vite+ bin (https://viteplus.dev)
-. "/home/sumit/.config/vite-plus/env"
+# . "/home/sumit/.config/vite-plus/env"
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/sumit/.local/bin:$PATH"

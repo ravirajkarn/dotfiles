@@ -10,7 +10,7 @@ M.monitors = {
     -- Primary laptop display
     {
         output   = "eDP-1",
-        mode     = "preferred",
+        mode     = "1920x1080@60.00",
         position = "auto",
         scale    = 1.0,
     },

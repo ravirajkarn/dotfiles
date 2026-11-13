@@ -27,6 +27,7 @@ local apps = {
     fileManager = "dolphin",
     menu        = "hyprlauncher",
     browser     = "google-chrome-stable",
+    statusbar   = "gBar",
 }
 
 return apps

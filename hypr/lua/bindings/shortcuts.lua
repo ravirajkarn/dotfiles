@@ -37,18 +37,24 @@ local function build_bindings()
 			action = hl.dsp.exec_cmd(
 				"command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"),
 		},
-		{ key = mod .. " + E",             action = hl.dsp.exec_cmd(fileManager) },
-		{ key = mod .. " + V",             action = hl.dsp.window.float({ action = "toggle" }) },
-		{ key = mod .. " + R",             action = hl.dsp.exec_cmd(menu) },
-		{ key = mod .. " + P",             action = hl.dsp.window.pseudo() },
-		{ key = mod .. " + J",             action = hl.dsp.layout("togglesplit") },
-		{ key = mod .. " + W",             action = hl.dsp.exec_cmd(browse) },
+		{ key = mod .. " + E",     action = hl.dsp.exec_cmd(fileManager) },
+		{ key = mod .. " + V",     action = hl.dsp.window.float({ action = "toggle" }) },
+		{ key = mod .. " + R",     action = hl.dsp.exec_cmd(menu) },
+		{ key = mod .. " + P",     action = hl.dsp.window.pseudo() },
+		{ key = mod .. " + J",     action = hl.dsp.layout("togglesplit") },
+		{ key = mod .. " + W",     action = hl.dsp.exec_cmd(browse) },
 
 		-- Directional Focus (Arrow Keys)
-		{ key = mod .. " + left",          action = hl.dsp.focus({ direction = "left" }) },
-		{ key = mod .. " + right",         action = hl.dsp.focus({ direction = "right" }) },
-		{ key = mod .. " + up",            action = hl.dsp.focus({ direction = "up" }) },
-		{ key = mod .. " + down",          action = hl.dsp.focus({ direction = "down" }) },
+		{ key = mod .. " + left",  action = hl.dsp.focus({ direction = "left" }) },
+		{ key = mod .. " + right", action = hl.dsp.focus({ direction = "right" }) },
+		{ key = mod .. " + up",    action = hl.dsp.focus({ direction = "up" }) },
+		{ key = mod .. " + down",  action = hl.dsp.focus({ direction = "down" }) },
+
+		-- Restart gBar
+		{
+			key    = mod .. " + B",
+			action = hl.dsp.exec_cmd("pkill -x gBar || gBar bar eDP-1"),
+		},
 
 		-- -- Special Workspace (Scratchpad)
 		-- { key = mod .. " + S",          action = hl.dsp.workspace.toggle_special("magic") },
@@ -57,8 +63,8 @@ local function build_bindings()
 		-- Mouse Workspace Scroll & Window Drag/Resize
 		{ key = mod .. " + mouse_down",    action = hl.dsp.focus({ workspace = "e+1" }) },
 		{ key = mod .. " + mouse_up",      action = hl.dsp.focus({ workspace = "e-1" }) },
-		{ key = mod .. " + mouse:272",     action = hl.dsp.window.drag(),                      opts = { mouse = true } },
-		{ key = mod .. " + mouse:273",     action = hl.dsp.window.resize(),                    opts = { mouse = true } },
+		{ key = mod .. " + mouse:272",     action = hl.dsp.window.drag(),                  opts = { mouse = true } },
+		{ key = mod .. " + mouse:273",     action = hl.dsp.window.resize(),                opts = { mouse = true } },
 
 		-- Screenshot
 		{ key = "PRINT",                   action = screenshot and screenshot.quick_full },

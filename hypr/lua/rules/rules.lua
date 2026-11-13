@@ -51,6 +51,12 @@ M.window_rules = {
 
 ---@type HL.LayerRuleSpec[]
 M.layer_rules = {
+    {
+        name         = "gbar-blur",
+        match        = { namespace = "^gBar$" },
+        blur         = true,
+        ignore_alpha = 0.2,
+    },
     -- {
     --     name = "no-anim-overlay",
     --     match = { namespace = "^my-overlay$" },

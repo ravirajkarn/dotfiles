@@ -46,3 +46,6 @@
 [submodule "web-greeter/themes/litarvan"]
 	path = web-greeter/themes/litarvan
 	url = https://github.com/Litarvan/lightdm-webkit-theme-litarvan.git
+[submodule "arch"]
+	path = arch
+	url = https://github.com/ravirajkarn/dotfiles_hyprland.git
