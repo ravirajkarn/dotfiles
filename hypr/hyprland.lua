@@ -36,6 +36,8 @@ local modules = {
 	-- Window & Workspace Rules
 	"lua.rules.rules",
 
+	-- Load plugin bindings
+	"lua.plugins.hyprcapture",
 }
 
 -- 3. Load and execute each module safely

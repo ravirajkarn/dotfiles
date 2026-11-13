@@ -1,13 +1,16 @@
 -- See https://wiki.hypr.land/configuring/core/binds/
-local logger = SafeRequire("lua.utils.logger")
-local apps   = SafeRequire("lua.core.apps")
+local logger     = SafeRequire("lua.utils.logger")
+local apps       = SafeRequire("lua.core.apps")
+local screenshot = SafeRequire("lua.core.screenshot")
 
-local M      = {}
 
-M.mainMod    = "SUPER"
+
+local M   = {}
+
+M.mainMod = "SUPER"
 
 -- Stores active bind handles by name or key (e.g., M.handles["close_window"]:set_enabled(false))
-M.handles    = {}
+M.handles = {}
 
 ---@class BindSpec
 ---@field id? string
@@ -23,7 +26,7 @@ local function build_bindings()
 	local term        = (apps and apps.terminal) or "kitty"
 	local fileManager = (apps and apps.fileManager) or "dolphin"
 	local menu        = (apps and apps.menu) or "hyprlauncher"
-
+	local browse      = (apps and apps.browser) or "firefox"
 	---@type BindSpec[]
 	local binds       = {
 		-- Application & Window Management
@@ -34,27 +37,34 @@ local function build_bindings()
 			action = hl.dsp.exec_cmd(
 				"command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"),
 		},
-		{ key = mod .. " + E",          action = hl.dsp.exec_cmd(fileManager) },
-		{ key = mod .. " + V",          action = hl.dsp.window.float({ action = "toggle" }) },
-		{ key = mod .. " + R",          action = hl.dsp.exec_cmd(menu) },
-		{ key = mod .. " + P",          action = hl.dsp.window.pseudo() },
-		{ key = mod .. " + J",          action = hl.dsp.layout("togglesplit") },
+		{ key = mod .. " + E",             action = hl.dsp.exec_cmd(fileManager) },
+		{ key = mod .. " + V",             action = hl.dsp.window.float({ action = "toggle" }) },
+		{ key = mod .. " + R",             action = hl.dsp.exec_cmd(menu) },
+		{ key = mod .. " + P",             action = hl.dsp.window.pseudo() },
+		{ key = mod .. " + J",             action = hl.dsp.layout("togglesplit") },
+		{ key = mod .. " + W",             action = hl.dsp.exec_cmd(browse) },
 
 		-- Directional Focus (Arrow Keys)
-		{ key = mod .. " + left",       action = hl.dsp.focus({ direction = "left" }) },
-		{ key = mod .. " + right",      action = hl.dsp.focus({ direction = "right" }) },
-		{ key = mod .. " + up",         action = hl.dsp.focus({ direction = "up" }) },
-		{ key = mod .. " + down",       action = hl.dsp.focus({ direction = "down" }) },
+		{ key = mod .. " + left",          action = hl.dsp.focus({ direction = "left" }) },
+		{ key = mod .. " + right",         action = hl.dsp.focus({ direction = "right" }) },
+		{ key = mod .. " + up",            action = hl.dsp.focus({ direction = "up" }) },
+		{ key = mod .. " + down",          action = hl.dsp.focus({ direction = "down" }) },
 
-		-- Special Workspace (Scratchpad)
-		{ key = mod .. " + S",          action = hl.dsp.workspace.toggle_special("magic") },
-		{ key = mod .. " + SHIFT + S",  action = hl.dsp.window.move({ workspace = "special:magic" }) },
+		-- -- Special Workspace (Scratchpad)
+		-- { key = mod .. " + S",          action = hl.dsp.workspace.toggle_special("magic") },
+		-- { key = mod .. " + SHIFT + S",  action = hl.dsp.window.move({ workspace = "special:magic" }) },
 
 		-- Mouse Workspace Scroll & Window Drag/Resize
-		{ key = mod .. " + mouse_down", action = hl.dsp.focus({ workspace = "e+1" }) },
-		{ key = mod .. " + mouse_up",   action = hl.dsp.focus({ workspace = "e-1" }) },
-		{ key = mod .. " + mouse:272",  action = hl.dsp.window.drag(),                               opts = { mouse = true } },
-		{ key = mod .. " + mouse:273",  action = hl.dsp.window.resize(),                             opts = { mouse = true } },
+		{ key = mod .. " + mouse_down",    action = hl.dsp.focus({ workspace = "e+1" }) },
+		{ key = mod .. " + mouse_up",      action = hl.dsp.focus({ workspace = "e-1" }) },
+		{ key = mod .. " + mouse:272",     action = hl.dsp.window.drag(),                      opts = { mouse = true } },
+		{ key = mod .. " + mouse:273",     action = hl.dsp.window.resize(),                    opts = { mouse = true } },
+
+		-- Screenshot
+		{ key = "PRINT",                   action = screenshot and screenshot.quick_full },
+		{ key = "SHIFT + PRINT",           action = screenshot and screenshot.quick_region },
+		{ key = mod .. " + PRINT",         action = screenshot and screenshot.quick_window },
+		{ key = mod .. " + SHIFT + PRINT", action = screenshot and screenshot.region },
 
 		-- Laptop Multimedia Keys (PipeWire / WirePlumber & Brightness)
 		{
@@ -93,7 +103,9 @@ local function build_bindings()
 		{ key = "XF86AudioPause", action = hl.dsp.exec_cmd("playerctl play-pause"), opts = { locked = true } },
 		{ key = "XF86AudioPlay",  action = hl.dsp.exec_cmd("playerctl play-pause"), opts = { locked = true } },
 		{ key = "XF86AudioPrev",  action = hl.dsp.exec_cmd("playerctl previous"),   opts = { locked = true } },
+
 	}
+
 
 	-- Workspace Switching & Window Movement [1..10 -> keys 1..9, 0]
 	for i = 1, 10 do
@@ -175,7 +187,7 @@ function M.apply()
 			all_ok = false
 		end
 	end
-
+	-- logger.trace("all ok")
 	return all_ok
 end
 
